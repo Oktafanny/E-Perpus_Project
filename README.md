@@ -1,5 +1,5 @@
-# HealthyConnect
-Ini adalah repository kelompok final project kami "HealthyConnect" di SIB LearningX (Grup 5 - kelompok 3) yang beranggotakan:
-- Muhammad Krisna Adiputro
-- Muthia Annisa Rama Dhanti
-- Ryan Immanuel
+# E-PERPUS
+Ini adalah repository kelompok final project kami "E-perpus" di SIB LearningX (Grup 3 - kelompok 2) yang beranggotakan:
+- Oktafanny Eka Putri
+- Lorenza Shela Tansyah
+- Latifah Nuraini
