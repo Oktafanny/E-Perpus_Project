@@ -8,9 +8,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-    <title>Login</title>
+    <title>Admin Reg</title>
 </head>
-
 <script>
     function is_username(asValue) {
         var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,20}$/;
@@ -18,12 +17,12 @@
     }
 
     function sign_up() {
-        document.querySelector('.card-title').innerText = 'Register';
-
         let username = $("#username").val();
         let nama_lengkap = $("#nama_lengkap").val();
         let password = $("#password").val();
         let password2 = $("#confirmpassword").val();
+        let admin_key = $("#adminkey").val();
+
 
         if (username === "") {
             $("#username").addClass("is-invalid");
@@ -81,95 +80,57 @@
             $("#confirmpassword").removeClass("is-invalid");
         }
 
+        if (admin_key === "") {
+            $("#adminkey").addClass("is-invalid");
+            $("#help_adminkey1")
+                .text("Tolong masukkan kunci rahasia yang diberikan admin")
+            $("#adminkey").focus();
+            return;
+        }
+        else {
+            $("#adminkey").removeClass("is-invalid");
+        }
 
         $.ajax({
             type: "POST",
-            url: "/user_signup",
+            url: "/admin_signup",
             data: {
                 username: username,
                 nama_lengkap: nama_lengkap,
                 password: password,
+                admin_key: admin_key
             },
             success: function (response) {
                 if (response["result"] === "success") {
-                    alert("Pendaftaran Member Sukses!");
+                    alert("Pendaftarann Admin Sukses!");
                     window.location.href = "/login";
-                } else {
+                } else if (response["result"] === "error_uname") {
                     $("#username").addClass("is-invalid");
                     $("#help_username1")
                         .text("Username sudah terdaftar")
                 }
-            },
-        });
-
-
-
-    }
-
-
-    function sign_in() {
-        document.querySelector('.card-title').innerText = 'Login';
-
-        let username = $("#username").val();
-        let password = $("#password").val();
-
-        if (username === "") {
-            $("#username").addClass("is-invalid");
-            $("#help_username1")
-                .text("Tolong Masukkan Username Anda")
-            $("#username").focus();
-            return;
-        }
-        else {
-            $("#username").removeClass("is-invalid");
-        }
-
-        if (password === "") {
-            $("#password").addClass("is-invalid");
-            $("#password").focus();
-            return;
-        }
-        else {
-            $("#password").removeClass("is-invalid");
-        }
-
-        $.ajax({
-            type: "POST",
-            url: "/sign_in",
-            data: {
-                username_give: username,
-                password_give: password,
-            },
-            success: function (response) {
-                if (response["result"] === "success") {
-                    $.cookie("mytoken", response["token"], { path: "/" });
-                    window.location.replace("/");
-                } else {
-                    alert(response["msg"]);
+                else {
+                    $("#adminkey").addClass("is-invalid");
+                    $("#help_adminkey1")
+                        .text("Kunci rahasia yang anda masukkan salah")
+                    $("#adminkey").focus();
                 }
             },
         });
-
     }
 
-    function registerbtn() {
-        $("#boxnama").toggleClass("d-none")
-        $("#sign-in-btn").toggleClass("d-none")
-        $("#sign-up-box").toggleClass("d-none")
-        $("#sign-up-btn").toggleClass("d-none")
-        $("#create1").toggleClass("d-none")
-        $("#create2").toggleClass("d-none")
-    }
 
     function bersih() {
         $("#username").val('');
         $("#nama_lengkap").val('');
         $("#password").val('');
         $("#confirmpassword").val('');
+        $("#adminkey").val('');
     }
 </script>
 
-<body>
+
+<body class="login-banner">
     <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand text-primary" href="/">E-Perpus</a>
@@ -199,13 +160,19 @@
             </div>
         </div>
     </nav>
+
     <section class="h-100 d-flex align-items-center my-5" style="min-height:100vh;">
         <div class="container">
             <div class="row justify-content-sm-center">
                 <div class="col-12 col-md-8 col-lg-5">
                     <div class="card shadow-lg border-0">
+                        <!-- <img src="https://content.gallup.com/origin/gallupinc/GallupSpaces/Production/Cms/WORKPLACEV9CMS/2bgqjhmw_0iifqf_p8twtq.jpg"
+                            class="card-img-top" alt="..."> -->
                         <div class="card-body p-5">
-                            <h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
+                            <h1 class="fs-4 card-title fw-bold mb-4">Admin Registration</h1>
+                            <div id="wrapper-alert">
+
+                            </div>
                             <div>
                                 <div class="mb-3">
                                     <label class="mb-2 text-muted" for="email">Username</label>
@@ -216,7 +183,7 @@
                                     </div>
                                 </div>
 
-                                <div id="boxnama" class="mb-3 d-none">
+                                <div id="boxnama" class="mb-3">
                                     <div class="mb-2 w-100">
                                         <label class="text-muted" for="nama_lengkap">Nama Lengkap</label>
                                     </div>
@@ -228,7 +195,6 @@
 
                                 </div>
 
-
                                 <div class="mb-3">
                                     <div class="mb-2 w-100">
                                         <label class="text-muted" for="password">Password</label>
@@ -239,7 +205,7 @@
                                     </div>
                                 </div>
 
-                                <div id="sign-up-box" class="d-none">
+                                <div id="sign-up-box">
                                     <div class="mb-3">
                                         <div class="mb-2 w-100">
                                             <label class="text-muted" for="password">Confirm Password</label>
@@ -253,18 +219,21 @@
                                 </div>
 
 
-                                <div id="sign-in-btn" class="d-flex gap-2">
-                                    <button type="submit" class="btn btn-primary flex-fill text-white"
-                                        onclick="sign_in()">Sign In</button>
-                                    <button type="button" class="btn btn-outline-primary flex-fill"
-                                        onclick="bersih()">Clear</button>
+                                <div class="mb-3">
+                                    <div class="mb-2 w-100">
+                                        <label class="text-muted" for="adminkey">Admin Key (Kunci Rahasia Khusus
+                                            Admin)</label>
+                                    </div>
+                                    <input id="adminkey" type="text" class="form-control" name="adminkey" required>
+                                    <div id="help_adminkey" class="invalid-feedback">
+                                        <p id="help_adminkey1"></p>
+                                    </div>
                                 </div>
 
-                                <div id="sign-up-btn" class="d-flex gap-2 d-none">
-                                    <button type="submit" class="btn btn-primary flex-fill text-white"
+
+                                <div id="sign-up-btn" class="d-flex gap-2">
+                                    <button type="button" class="btn btn-primary flex-fill text-white"
                                         onclick="sign_up()">Sign Up</button>
-                                    <button type="button" class="btn btn-outline-primary flex-fill"
-                                        onclick="registerbtn()">Cancel</button>
                                     <button type="button" class="btn btn-outline-primary flex-fill"
                                         onclick="bersih()">Clear</button>
                                 </div>
@@ -272,10 +241,7 @@
                         </div>
                         <div class="card-footer py-3 border-0">
                             <div id="create1" class="text-center">
-                                Tidak Punya Akun? <a href="#" onclick="registerbtn()" class="text-dark">Klik Disini!</a>
-                            </div>
-                            <div id="create2" class="text-center d-none">
-                                Ingin jadi admin E-Perpus? <a href="admin_login.html" class="text-dark">Klik
+                                Sudah Punya Akun? <a href="login.html" class="text-dark">Klik
                                     Disini!</a>
                             </div>
                         </div>
@@ -285,6 +251,9 @@
             </div>
         </div>
     </section>
+
+
+
     <footer class="copyright">
         <div class="container py-2">
             <p class="text-center my-3">Copyright © by Kelompok 2</p>
