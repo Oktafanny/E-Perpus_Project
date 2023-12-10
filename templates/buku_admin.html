@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Perpus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    
+    <!-- Bulma CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
+    />
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Style CSS -->
+    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    
+    <!-- Feather Icon -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <style>
+      * {
+        font-family: "Poppins", sans-serif;
+      }
+      
+      .wrap{
+        margin-top: 30px;
+        justify-content: center;
+      }
+
+      .wrap > h2{
+        text-align: center;
+      }
+
+      .search-box {
+        width: 50%;
+        margin: 50px auto;
+        max-width: 700px;
+      }
+
+      .mycards {
+        margin: 20px auto 0px auto;
+        width: 80%;
+        max-width: 1200px;
+      }
+
+      .card-body > p {
+        margin-bottom: 5px;
+        font-size: 12px;
+      }
+
+      .card-body > a {
+        width: 45%;
+      }
+    </style>
+
+</head>
+<body>
+  <!-- navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand text-primary" href="#">E-Perpus</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="#">Buku</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="#">Peminjaman</a>
+                </li>
+                <li class="nav-item">
+                    <a href="/login" style="border-radius: 20px;"
+                            class="btn border-dark py-2 px-3">Logout</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- BUKU ADMIN  -->
+<div class="wrap">
+  <h2>TAMBAHKAN BUKU</h2>
+  <hr/>
+</div>
+<div class="container ">
+  <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center">+Tambah</a>
+</div>
+  
+<!-- Card -->
+<div class="mycards">
+  <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+    <div class="col">
+        <div class="card shadow h-100">
+            <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+                class="card-buku">
+            <div class="card-body">
+                <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
+                <p class="card-text">Genre : Romance</p>
+                <p>Penulis : Prisca Primasari</p>
+                <p>Tahun : 2011</p>
+                <a onclick="edit()" class="btn btn-primary col rounded-pill">Edit</a>
+                <a onclick="hapus()" class="btn btn-danger col rounded-pill">Hapus</a>
+            </div>
+        </div>
+    </div>
+  </div>
+</div>
+
+<!-- Tambah : Form Input  -->
+<div class="modal" id="input-buku">
+  <div
+    class="modal-background"
+    onclick='$("#input-buku").removeClass("is-active")'>
+  </div>
+  <div class="modal-content modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Input Buku</h5>
+        <button onclick='$("#input-buku").removeClass("is-active")' type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+              <input type="text" class="form-control" id="judul" placeholder="Judul Buku">
+          </div>
+          <div class="mb-3">
+              <input type="text" class="form-control" id="genre" placeholder="Genre">
+          </div>
+          <div class="mb-3">
+              <input type="number" class="form-control" id="tahun" placeholder="Tahun">
+          </div>
+          <div class="mb-3">
+              <input type="text" class="form-control" id="pengarang" placeholder="Pengarang">
+          </div>
+          <div class="mb-3">
+              <input type="number" class="form-control" id="stok" placeholder="Stok">
+          </div>
+          <div class="mb-3">
+            <label for="formFile" class="form-label">Sampul Buku</label>
+            <input class="form-control mb-3" type="file" id="sampul">
+            <div class="mb-3">
+              <textarea class="form-control" id="sinopsis" rows="3" placeholder="Sinopsis"></textarea>
+            </div>
+      </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button onclick='save()' type="button" class="btn btn-primary" data-bs-dismiss="modal">Simpan</button>
+      </div>
+    </div>
+  </div>
+
+<!-- Footer -->
+<footer class="copyright mt-3 shadow">
+  <div class="container py-2">
+    <div class="row mt-2">
+      <div class="col-md-4">
+        Copyright © by Kelompok 2
+      </div>
+      <div class="icon col-md-4 offset-md-4 d-flex justify-content-end">
+        <ul>
+          <i data-feather="facebook"></i>
+          <i data-feather="instagram"></i> 
+          <i data-feather="globe"></i>
+        </ul>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+  feather.replace();
+  </script>
+</body>
+</html>
