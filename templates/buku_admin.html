@@ -10,6 +10,9 @@
     <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     
+    <!-- Style CSS -->
+    <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
+    
     <!-- Bulma CSS -->
     <link
       rel="stylesheet"
@@ -34,7 +37,10 @@
     <!-- JS -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <style>
+
+    
+
+    <!-- <style>
       * {
         font-family: "Poppins", sans-serif;
       }
@@ -68,7 +74,7 @@
       .card-body > a {
         width: 45%;
       }
-    </style>
+    </style> -->
 
 </head>
 <body>
@@ -83,10 +89,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Buku</a>
+                    <a class="nav-link text-dark" href="/buku_admin">Buku</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" href="#">Peminjaman</a>
+                    <a class="nav-link text-dark" href="/peminjaman_admin">Peminjaman</a>
                 </li>
                 <li class="nav-item">
                     <a href="/login" style="border-radius: 20px;"
@@ -100,11 +106,12 @@
 <!-- BUKU ADMIN  -->
 <div class="wrap">
   <h2>TAMBAHKAN BUKU</h2>
-  <hr/>
+  <hr class="mx-auto">
+  <div class="container justify-content-center">
+    <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center">+Tambah</a>
+  </div>
 </div>
-<div class="container ">
-  <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center">+Tambah</a>
-</div>
+
   
 <!-- Card -->
 <div class="mycards">

@@ -1,0 +1,34 @@
+* {
+    font-family: "Poppins", sans-serif;
+}
+
+.wrap{
+    margin-top: 30px;
+    justify-content: center;
+  }
+
+  .wrap > h2{
+    text-align: center;
+    font-weight: 600;
+  }
+
+  .search-box {
+    width: 50%;
+    margin: 50px auto;
+    max-width: 700px;
+  }
+
+  .mycards {
+    margin: 20px auto 0px auto;
+    width: 80%;
+    max-width: 1200px;
+  }
+
+  .card-body > p {
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+
+  .card-body > a {
+    width: 45%;
+  }
