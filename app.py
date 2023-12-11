@@ -20,6 +20,9 @@ from werkzeug.utils import secure_filename
 dotenv_path = join(dirname(__file__), '.env')
 load_dotenv(dotenv_path)
 
+SECRET_KEY = 'sparta'
+ADMIN_KEY = 'lala'
+
 MONGODB_URI = os.environ.get("MONGODB_URI")
 DB_NAME =  os.environ.get("DB_NAME")
 
@@ -76,9 +79,9 @@ def home():
     except jwt.exceptions.DecodeError:
         return render_template("index.html")
 
-@app.route('/login_admin', methods=['GET'])
-def login_admin():
-    return render_template('login_admin.html')
+# @app.route('/login_admin', methods=['GET'])
+# def login_admin():
+#     return render_template('login_admin.html')
 
 @app.route('/buku_admin', methods=['GET'])
 def buku_admin():
@@ -105,7 +108,6 @@ def login():
     
 @app.route("/sign_in", methods=["POST"])
 def sign_in():
-    # Sign in
     username_receive = request.form["username_give"]
     password_receive = request.form["password_give"]
     pw_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
@@ -119,7 +121,6 @@ def sign_in():
     if result:
         payload = {
             "id": username_receive,
-            # the token will be valid for 24 hours
             "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
             "role": result["role"],
         }
@@ -132,8 +133,6 @@ def sign_in():
                 "token": token,
             }
         )
-    # Let's also handle the case where the id and
-    # password combination cannot be found
     else:
         return jsonify(
             {
@@ -141,17 +140,37 @@ def sign_in():
                 "msg": "Kami tidak dapat menemukan pengguna dengan kombinasi username/password tersebut.",
             }
         )
+
+@app.route("/admin_reg")
+def admin_register():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({'username': payload['id']})
+            if user_info:
+                # Jika pengguna sudah login, arahkan ke halaman lain
+                return redirect(url_for('home'))
+        
+        # Jika pengguna belum login, tampilkan halaman registrasi admin
+        return render_template("admin_reg.html")
     
-@app.route("/user_signup", methods=["POST"])
-def user_signup():
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return render_template("admin_reg.html")
+    
+@app.route("/admin_signup", methods=["POST"])
+def admin_signup():
     username_receive = request.form["username"]
     nama_receive = request.form["nama_lengkap"]
     pw_receive = request.form["password"]
+    adminkey_receive = request.form["admin_key"]
     pw_hash = hashlib.sha256(pw_receive.encode("utf-8")).hexdigest()
 
     user_exists = bool(db.user.find_one({"username": username_receive}))
     if user_exists:
         return jsonify({"result": "error_uname", "msg": f"An account with username {username_receive} is already exists. Please Login!"})
+    elif adminkey_receive != ADMIN_KEY:
+        return jsonify({"result": "error_akey", "msg": f"Admin key yang anda masukkan salah!"})
     else:
         doc = {
         "username": username_receive,                              
@@ -159,10 +178,10 @@ def user_signup():
         "password": pw_hash,                                      
         "profile_pic_real": "profile_pics/profile_placeholder.png", 
         "profile_info": "",
-        "role": "member"                                          
+        "role": "admin"                                          
         }
         db.user.insert_one(doc)
-        return jsonify({"result": "success"})
+        return jsonify({"result": "success"})     
 
 @app.route('/buku', methods=['GET'])
 def buku():
