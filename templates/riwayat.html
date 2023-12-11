@@ -139,7 +139,16 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
+    {% if user_info %}
+    {% if user_info.role == 'admin' %}
+        {% include 'navbar_check/navbar_admin.html' %}
+    {% elif user_info.role == 'member' %}
+        {% include 'navbar_check/navbar_member.html' %}
+    {% endif %}
+{% else %}
+    {% include 'navbar_check/navbar_viewer.html' %}
+{% endif %}
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand text-primary" href="/">E-Perpus</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -178,7 +187,7 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav> -->
     <section class="artikel_area section_gap py-5" id="artikelsection" style="min-height:100vh">
         <div class="container">
             <div class="mb-5">

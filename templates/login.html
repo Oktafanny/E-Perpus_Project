@@ -159,6 +159,8 @@
         $("#sign-up-btn").toggleClass("d-none")
         $("#create1").toggleClass("d-none")
         $("#create2").toggleClass("d-none")
+        $('#register').text('Register')
+
     }
 
     function bersih() {
@@ -170,7 +172,7 @@
 </script>
 
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
+    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
         <div class="container">
             <a class="navbar-brand text-primary" href="/">E-Perpus</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -198,14 +200,23 @@
                 </ul>
             </div>
         </div>
-    </nav>
+    </nav> -->
+    <!-- {% if user_info %}
+    {% if user_info.role == 'admin' %}
+        {% include 'navbar_check/navbar_admin.html' %}
+    {% elif user_info.role == 'member' %}
+        {% include 'navbar_check/navbar_member.html' %}
+    {% endif %}
+{% else %}
+    {% include 'navbar_check/navbar_viewer.html' %}
+{% endif %} -->
     <section class="h-100 d-flex align-items-center my-5" style="min-height:100vh;">
         <div class="container">
             <div class="row justify-content-sm-center">
                 <div class="col-12 col-md-8 col-lg-5">
                     <div class="card shadow-lg border-0">
                         <div class="card-body p-5">
-                            <h1 class="fs-4 card-title fw-bold mb-4">Login</h1>
+                            <h1 class="fs-4 card-title fw-bold mb-4" id="resiter">Login</h1>
                             <div>
                                 <div class="mb-3">
                                     <label class="mb-2 text-muted" for="email">Username</label>
@@ -275,7 +286,7 @@
                                 Tidak Punya Akun? <a href="#" onclick="registerbtn()" class="text-dark">Klik Disini!</a>
                             </div>
                             <div id="create2" class="text-center d-none">
-                                Ingin jadi admin E-Perpus? <a href="admin_login.html" class="text-dark">Klik
+                                Ingin jadi admin E-Perpus? <a href="admin_reg" class="text-dark">Klik
                                     Disini!</a>
                             </div>
                         </div>

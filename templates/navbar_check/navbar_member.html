@@ -1,0 +1,47 @@
+<script>
+    function logout() {
+        $.removeCookie('mytoken', { path: '/' });
+        alert('Signed out!');
+        window.location.href = "/login";
+    }
+</script>
+<nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand text-primary" href="/">E-Perpus</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/hal_buku">Buku</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/contact_us">Contact Us</a>
+                </li>
+                <div class="dropdown">
+                    <button class="btn btn-primary dropdown-toggle" style="border-radius: 20px;" type="button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                        <img class="rounded-circle" style="width: 30px; height: 30px;"
+                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSteItzPyeDKBxyWiOA8xrPZXIlxOYv1b1VVg&usqp=CAU" />
+                    </button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="/profil">Pengaturan Profil</a></li>
+                        <li><a class="dropdown-item" href="/hal_riwayat">Riwayat Peminjaman</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" onclick="logout()">Sign Out</a></li>
+                    </ul>
+                </div>
+            </ul>
+        </div>
+    </div>
+</nav>

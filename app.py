@@ -40,26 +40,51 @@ app.config['UPLOAD_FOLDER'] = '/static/profile_pics'
 
 SECRET_KEY = 'SPARTA'
 TOKEN_KEY = 'mytoken'
+ADMIN_KEY = 'intel'
 
-@app.route('/')
+
+@app.route('/', methods=['GET'])
 def home():
     token_receive = request.cookies.get("mytoken")
     try:
-        if token_receive:
-            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-            user_info = db.user.find_one({'username': payload['id']})
-        else:
-            user_info = None
-        
-        articles = db.articles.find().sort("tanggal", -1).limit(3)
-        
-        return render_template('index.html', user_info=user_info, articles=articles)
-    
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        return render_template('index.html', user_info=user_info)
     except jwt.ExpiredSignatureError:
-        return render_template("index.html")
-    
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
     except jwt.exceptions.DecodeError:
-        return render_template("index.html")
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+    
+@app.route('/login', methods=['GET'])
+def login():
+    msg = request.args.get('msg')
+    return render_template('login.html', msg=msg)
+                           
+# @app.route('/')
+# def home():
+#     token_receive = request.cookies.get("mytoken")
+#     try:
+#         if token_receive:
+#             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#             user_info = db.user.find_one({'username': payload['id']})
+#         else:
+#             user_info = None
+        
+#         articles = db.articles.find().sort("tanggal", -1).limit(3)
+        
+#         return render_template('index.html', user_info=user_info, articles=articles)
+    
+#     except jwt.ExpiredSignatureError:
+#         return render_template("index.html")
+    
+#     except jwt.exceptions.DecodeError:
+#         return render_template("index.html")
 
 # @app.route('/login_admin', methods=['GET'])
 # def login_admin():
@@ -157,20 +182,20 @@ def save_img():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
     
-@app.route("/login")
-def login():
-    token_receive = request.cookies.get(TOKEN_KEY)
-    try:
-        if token_receive:
-            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-            user_info = db.user.find_one({'username': payload['id']})
-            if user_info:
-                return redirect(url_for('home'))
+# @app.route("/login")
+# def login():
+#     token_receive = request.cookies.get("mytoken")
+#     try:
+#         if token_receive:
+#             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+#             user_info = db.user.find_one({'username': payload['id']})
+#             if user_info:
+#                 return redirect(url_for('home'))
         
-        return render_template("login.html")
+#         return render_template("login.html")
     
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return render_template("login.html")
+#     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#         return render_template("login.html")
     
 @app.route("/sign_in", methods=["POST"])
 def sign_in():
@@ -266,10 +291,14 @@ def admin_signup():
         "password": pw_hash,                                      
         "profile_pic_real": "profile_pics/profile_placeholder.png", 
         "profile_info": "",
-        "role": "admin"                                          
+        "role": "admin"                               
         }
         db.user.insert_one(doc)
-        return jsonify({"result": "success"})     
+        return jsonify({"result": "success"})   
+      
+@app.route('/hal_buku', methods=['GET'])
+def hal_buku():
+    return render_template('buku.html')
 
 @app.route('/buku', methods=['GET'])
 def buku():
