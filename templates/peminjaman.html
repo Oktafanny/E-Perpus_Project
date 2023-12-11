@@ -47,6 +47,33 @@
             /* Menyesuaikan posisi vertikal garis */
         }
     </style>
+        <script>
+            function pinjam(id) {
+                let nama = $('#nama').val();
+                let alamat = $('#alamat').val();
+                let no_telp = $('#no_telp').val();
+                let tgl_pinjam = $('#tgl_pinjam').val();
+                let tgl_kembali = $('#tgl_kembali').val();
+                let catatan = $('#catatan').val();
+                $.ajax({
+                    type: "POST",
+                    url: "/proses_pinjam/${id}",
+                    data: { 
+                        nama_give: nama,
+                        alamat_give: alamat,
+                        telp_give: no_telp,
+                        tgl_pinjam: tgl_pinjam,
+                        tgl_kembali: tgl_kembali,
+                        catatan: catatan,
+                        book_id: id
+                     },
+                    success: function (response) {
+                        alert(response["msg"])
+                        window.location.reload();
+                    }
+                });
+            }
+        </script>
 </head>
 
 <body>
@@ -79,7 +106,7 @@
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/profil">Pengaturan Profil</a></li>
-                            <li><a class="dropdown-item" href="/riwayat">Riwayat Peminjaman</a></li>
+                            <li><a class="dropdown-item" href="/hal_riwayat">Riwayat Peminjaman</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -101,15 +128,14 @@
                 <div class="row row-cols-1 row-cols-md-3 g-4" id="cards-box">
                     <div class="col-md-4">
                         <div class="card shadow h-100">
-                            <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+                            <img src="{{ url_for('static', filename='folder_tempat_gambar/' + find.book.image) }}"
                                 class="card-img-top" style="height: 100%;">
                             <div class="card-body">
-                                <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-                                <p class="card-text">Genre : Romance</p>
-                                <p>Penulis : Prisca Primasari</p>
-                                <p>Tahun : 2011</p>
-                                <!-- <a href="#" class="btn btn-primary col" style="border-radius: 20px;">Pinjam</a> -->
-                                <!-- <a href="#" class="btn border-primary col" style="border-radius: 20px;">Deskripsi</a> -->
+                                <h5 class="card-title mb-2">{{find_book.judul}}</h5>
+                                <p class="card-text">Genre : {{find_book.genre}}</p>
+                                <p>Penulis : {{find_book.penulis}}</p>
+                                <p>Tahun : {{find_book.tahun}}</p>
+                                <p>Sinopsis : {{find_book.sinopsis}}</p>
                             </div>
                         </div>
                     </div>
@@ -121,30 +147,30 @@
                                     style="border: 2px solid grey;">
                             </div>
                             <div class="mb-3">
-                                <input type="text" class="form-control" id="nama" placeholder="Alamat"
+                                <input type="text" class="form-control" id="alamat" placeholder="Alamat"
                                     style="border: 2px solid grey;">
                             </div>
                             <div class="mb-3">
-                                <input type="number" class="form-control" id="nama" placeholder="No. Telepon"
+                                <input type="number" class="form-control" id="no_telp" placeholder="No. Telepon"
                                     style="border: 2px solid grey;">
                             </div>
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Tanggal Pinjam</label>
-                                <input type="date" class="form-control" id="nama" placeholder="Tanggal Pinjam"
+                                <label for="tgl_pinjam" class="form-label">Tanggal Pinjam</label>
+                                <input type="date" class="form-control" id="tgl_pinjam" placeholder="Tanggal Pinjam"
                                     style="border: 2px solid grey;">
                             </div>
                             <div class="mb-3">
-                                <label for="exampleInputEmail1" class="form-label">Tanggal Kembali</label>
-                                <input type="date" class="form-control" id="nama" placeholder="Tanggal Kembali"
+                                <label for="tgl_kembali" class="form-label">Tanggal Kembali</label>
+                                <input type="date" class="form-control" id="tgl_kembali" placeholder="Tanggal Kembali"
                                     style="border: 2px solid grey;">
                             </div>
                             <div class="form-floating">
-                                <textarea class="form-control" placeholder="Catatan" id="floatingTextarea2"
+                                <textarea class="form-control" placeholder="Catatan" id="catatan"
                                     style="height: 100px; border: 2px solid grey;"></textarea>
-                                <label for="floatingTextarea2">Catatan</label>
+                                <label for="catatan">Catatan</label>
                             </div>
                             <hr class="mx-auto">
-                            <button type="submit" class="btn btn-primary">Proses</button>
+                            <button type="button" onclick="pinjam('{{find_book._id}}')" class="btn btn-primary">Proses</button>
                         </form>
                     </div>
                 </div>

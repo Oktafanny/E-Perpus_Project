@@ -41,24 +41,6 @@ app.config['UPLOAD_FOLDER'] = '/static/profile_pics'
 SECRET_KEY = 'SPARTA'
 TOKEN_KEY = 'mytoken'
 
-# @app.route('/', methods=['GET'])
-# def home():
-#     token_receive = request.cookies.get(TOKEN_KEY)
-#     try:
-#         payload = jwt.decode(
-#             token_receive,
-#             SECRET_KEY,
-#             algorithms=['HS256']
-#         )
-#         user_info = db.users.find_one({'username':payload.get('id')})
-#         return render_template('index.html', user_info=user_info)
-#     except jwt.ExpiredSignatureError:
-#         msg = 'Your Token has expired'
-#         return redirect(url_for('login', msg=msg))
-#     except jwt.exceptions.DecodeError:
-#         msg = ' There was a problem logging you in'
-#         return redirect(url_for('login', msg=msg))
-
 @app.route('/')
 def home():
     token_receive = request.cookies.get("mytoken")
@@ -83,6 +65,62 @@ def home():
 # def login_admin():
 #     return render_template('login_admin.html')
 
+@app.route('/peminjaman/<id>', methods=['GET'])
+def peminjaman(id):
+    find_book = db.book.find_one({'_id': id}, {})
+    return render_template('peminjaman.html', find_book=find_book)
+
+@app.route('/proses_pinjam/<id>', methods=['POST'])
+def proses_pinjam(id):
+    nama = request.form.get('nama_give')
+    alamat = request.form.get('alamat_give')
+    no_telp = request.form.get('telp_give')
+    tgl_pinjam = request.form.get('tgl_pinjam')
+    tgl_kembali = request.form.get('tgl_kembali')
+    book_id = request.form.get('book_id')
+
+    doc = {
+        'nama': nama,
+        'alamat': alamat,
+        'no_telp': no_telp,
+        'tgl_pinjam': tgl_pinjam,
+        'tgl_kembali':tgl_kembali,
+        'id_buku':book_id,
+        'status':0
+    }
+    db.peminjaman.insert_one(doc)
+  
+    return jsonify({"msg": 'Peminjaman Berhasil di tambahkan, Silahkan beralih ke halaman Riwayat untuk mengecek status Peminjaman'})
+
+@app.route('/hal_riwayat')
+def riwayat_html():
+    return render_template('riwayat.html')
+ 
+@app.route('/riwayat', methods=['GET'])
+def riwayat():
+    book_list = list(db.book.find({},{}))
+    peminjaman_list = list(db.peminjaman.find({},{}))
+    return jsonify({'books': book_list, 'peminjaman':peminjaman_list})
+    # return render_template('riwayat.html')
+
+@app.route('/daftar_peminjaman', methods=['GET'])
+def daftar():
+    book_list = list(db.book.find({},{}))
+    peminjaman_list = list(db.peminjaman.find({},{}))
+    return jsonify({'books': book_list, 'peminjaman':peminjaman_list})
+
+@app.route("/accept/<int:bookId>", methods=["POST"])
+def accept_book(bookId):
+    # id_give = request.form['id_give']
+    db.peminjaman.update_one({'_id':int(bookId)},{'$set':{'status':1}})
+    return jsonify({'msg':'Accept!'})
+
+@app.route('/info/<int:book_id>', methods=['GET'])
+def info(book_id):
+    find_book = db.book.find_one({'_id': book_id}, {})
+    find_peminjaman = db.peminjaman.find_one({'_id': book_id}, {})
+    return jsonify({'book': find_book, 'peminjaman': find_peminjaman})
+
 @app.route('/buku_admin', methods=['GET'])
 def buku_admin():
     return render_template('buku_admin.html')
@@ -91,9 +129,37 @@ def buku_admin():
 def peminjaman_admin():
     return render_template('peminjaman_admin.html')
 
+@app.route("/update_profile", methods=["POST"])
+def save_img():
+    token_receive = request.cookies.get(TOKEN_KEY)
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        username = payload["id"]
+        name_receive = request.form["name_give"]
+        about_receive = request.form["about_give"]
+        new_doc = {
+            "name": name_receive, 
+            "profile_info": about_receive}
+        
+        if "file_give" in request.files:
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+
+        db.user.update_one(
+            {"username": payload["id"]}, 
+            {"$set": new_doc})
+        return jsonify({"result": "success", "msg": "Profil Diperbarui!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+    
 @app.route("/login")
 def login():
-    token_receive = request.cookies.get("mytoken")
+    token_receive = request.cookies.get(TOKEN_KEY)
     try:
         if token_receive:
             payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
@@ -207,15 +273,21 @@ def admin_signup():
 
 @app.route('/buku', methods=['GET'])
 def buku():
-    return render_template('buku.html')
+    book_list = list(db.book.find({},{}))
+    return jsonify({'books': book_list})
 
-@app.route('/peminjaman', methods=['GET'])
-def peminjaman():
-    return render_template('peminjaman.html')
+@app.route('/deskripsi/<int:book_id>', methods=['GET'])
+def deskripsi(book_id):
+    find_book = db.book.find_one({'_id': book_id}, {})
+    return jsonify({'book': find_book})
 
-@app.route('/riwayat', methods=['GET'])
-def riwayat():
-    return render_template('riwayat.html')
+# @app.route('/peminjaman', methods=['GET'])
+# def peminjaman():
+#     return render_template('peminjaman.html')
+
+# @app.route('/riwayat', methods=['GET'])
+# def riwayat():
+#     return render_template('riwayat.html')
 
 @app.route('/profil', methods=['GET'])
 def profil():

@@ -26,7 +26,116 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-l2VRKbYi1aGRZ5oxk/xDeQPQq5Ffmvj8ZkKW1D5FA7kFeM4M6F7L/lUn2P5xkiM+T" crossorigin="anonymous">
+    <script>
+        $(document).ready(function () {
+            show_riwayat();
+        });
 
+        function show_riwayat() {
+            $('#cards-box').empty();
+            $.ajax({
+                type: "GET",
+                url: "/riwayat",
+                data: {},
+                success: function (response) {
+                    let rows_book = response['books'];
+                    let rows_peminjaman = response['peminjaman'];
+                    for (let i = 0; i < rows_peminjaman.length; i++) {
+                        for (let j = 0; j < rows_book.length; j++) {
+                            if (rows_peminjaman[i]['book_id'] === rows_book[j]['_id']) {
+                                let id = rows_peminjaman[i]['_id'];
+                                let title = rows_book[j]['title'];
+                                let tgl_pinjam = rows_peminjaman[i]['tgl_pinjam'];
+                                let status = rows_peminjaman[i]['status'];
+                                let temp_html = '';
+                                if (status === 0) {
+                                    let temp_html = `<div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
+                        data-bs-target="">
+                        <div class="row g-0">
+                            <div class="col-8 col-md-9 col-lg-10">
+                                <div class="card-body">
+                                    <h5 class="card-title">${title}</h5>
+                                    <p class="card-text fw-bold">Tanggal Pinjam : <small class="text-muted">${tgl_pinjam}</small>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
+                                <div class="card-body">
+                                    <button type="button" onclick="showInfo('${id}')"
+                                        class="btn btn-outline-warning btnriwayat shadow-sm">Pending</button>
+                                </div>
+                                </div>
+                                </div>
+                                </div>`;
+                                } else {
+                                    temp_html = `<div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
+                        data-bs-target="">
+                        <div class="row g-0">
+                            <div class="col-8 col-md-9 col-lg-10">
+                                <div class="card-body">
+                                    <h5 class="card-title">${title}</h5>
+                                    <p class="card-text fw-bold">Tanggal Pinjam : <small class="text-muted">${tgl_pinjam}</small>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
+                                <div class="card-body">
+                                    <button type="button" onclick="showInfo('${id}')"
+                                        class="btn btn-outline-success btnriwayat shadow-sm">Accepted</button>
+                                </div>
+                                </div>
+                                </div>
+                                </div>`;
+                                }
+
+                                $('#cards-box').append(temp_html);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showInfo(bookId) {
+            $.ajax({
+                type: "GET",
+                url: `/info/${bookId}`,
+                data: {},
+                success: function (response) {
+                    let book = response['book'];
+                    let peminjaman = response['peminjaman'];
+
+                    // Update modal deskripsi dengan informasi dari response
+                    $('#deskripsi .card-img-top').attr('src', '/static/images/' + book['image']);
+                    $('#deskripsi .card-title').text(book['title']);
+                    $('#deskripsi .card-text-genre').text(`Genre: ${book['genre']}`);
+                    $('#deskripsi .card-text-tahun').text(`Tahun: ${book['tahun']}`);
+                    $('#deskripsi .card-text-penulis').text(`Penulis: ${book['penulis']}`);
+                    $('#deskripsi .card-text-nama').val(`Nama: ${peminjaman['nama']}`);
+                    $('#deskripsi .card-text-alamat').val(`Alamat: ${peminjaman['alamat']}`);
+                    $('#deskripsi .card-text-telp').val(`No. Telepon: ${peminjaman['telp']}`);
+                    $('#deskripsi .card-text-tgl-pinjam').val(`Tanggal Pinjam: ${peminjaman['tgl_pinjam']}`);
+                    $('#deskripsi .card-text-tgl-kembali').val(`Tanggal Kembali: ${peminjaman['tgl_kembali']}`);
+                    $('#deskripsi .card-text-catatan').val(`Catatan: ${peminjaman['catatan']}`);
+
+                    // Ganti kondisi untuk menetapkan status
+                    if (peminjaman['status'] === 0) {
+                        $('#deskripsi .card-text-status').val(`Status: Pending`);
+                        $('#deskripsi .card').addClass('bg-warning');
+                        $('#deskripsi .card-text-status').addClass('text-warning');
+                    } else {
+                        $('#deskripsi .card-text-status').val(`Status: Accepted`);
+                        $('#deskripsi .card').addClass('bg-success');
+                        $('#deskripsi .card-text-status').addClass('text-success');
+                    }
+
+                    // Tampilkan modal deskripsi
+                    $('#deskripsi').addClass('is-active');
+                }
+            });
+        }
+
+    </script>
 </head>
 
 <body>
@@ -52,14 +161,14 @@
                         <a class="nav-link text-dark" href="/contact_us">Contact Us</a>
                     </li>
                     <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" style="border-radius: 20px;" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
+                        <button class="btn btn-primary dropdown-toggle" style="border-radius: 20px;" type="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
                             <img class="rounded-circle" style="width: 30px; height: 30px;"
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSteItzPyeDKBxyWiOA8xrPZXIlxOYv1b1VVg&usqp=CAU" />
                         </button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="/profil">Pengaturan Profil</a></li>
-                            <li><a class="dropdown-item" href="/riwayat">Riwayat Peminjaman</a></li>
+                            <li><a class="dropdown-item" href="/hal_riwayat">Riwayat Peminjaman</a></li>
                             <li>
                                 <hr class="dropdown-divider">
                             </li>
@@ -77,8 +186,8 @@
 
                 <hr class="mx-auto">
             </div>
-            <div class="wrapper-riwayat">
-                <div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
+            <div class="wrapper-riwayat" id="cards-box">
+                <!-- <div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
                     data-bs-target="">
                     <div class="row g-0">
                         <div class="col-8 col-md-9 col-lg-10">
@@ -94,7 +203,7 @@
                                 <a onclick="$('#deskripsi').addClass('is-active')"
                                     class="btn btn-outline-warning btnriwayat shadow-sm">Read
                                     More</a>
-                            </div>
+                            </div> -->
 
                             <div class="modal" id="deskripsi">
                                 <div class="modal-background" onclick="$('#deskripsi').removeClass('is-active')"></div>
@@ -123,56 +232,52 @@
                                                                 <div class="mb-3">
                                                                     <input type="text" class="form-control" id="nama"
                                                                         placeholder="Nama Lengkap"
-                                                                        style="border: 2px solid grey;" value="Nama Lengkap"
-                                                                        disabled>
+                                                                        style="border: 2px solid grey;"
+                                                                        value="Nama Lengkap" disabled>
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <input type="text" class="form-control" id="nama"
+                                                                    <input type="text" class="form-control" id="alamat"
                                                                         placeholder="Alamat"
                                                                         style="border: 2px solid grey;" value="Alamat"
                                                                         disabled>
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <input type="text" class="form-control" id="nama"
+                                                                    <input type="text" class="form-control" id="telp"
                                                                         placeholder="No. Telepon"
-                                                                        style="border: 2px solid grey;" value="No. Telepon"
-                                                                        disabled>
+                                                                        style="border: 2px solid grey;"
+                                                                        value="No. Telepon" disabled>
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="exampleInputEmail1"
                                                                         class="form-label">Tanggal Pinjam</label>
-                                                                    <input type="date" class="form-control" id="nama"
-                                                                        placeholder="Tanggal Pinjam"
+                                                                    <input type="date" class="form-control"
+                                                                        id="tgl_pinjam" placeholder="Tanggal Pinjam"
                                                                         style="border: 2px solid grey;" value="Pending"
                                                                         disabled>
                                                                 </div>
                                                                 <div class="mb-3">
                                                                     <label for="exampleInputEmail1"
                                                                         class="form-label">Tanggal Kembali</label>
-                                                                    <input type="date" class="form-control" id="nama"
-                                                                        placeholder="Tanggal Kembali"
+                                                                    <input type="date" class="form-control"
+                                                                        id="tgl_kembali" placeholder="Tanggal Kembali"
                                                                         style="border: 2px solid grey;" value="Pending"
                                                                         disabled>
                                                                 </div>
-                                                                <!--<div class="form-floating">
+                                                                <div class="form-floating">
                                                                     <label for="exampleInputEmail1"
                                                                         class="form-label">Catatan</label>
                                                                     <textarea class="form-control" placeholder="Catatan"
                                                                         id="floatingTextarea2"
                                                                         style="height: 100px; border: 2px solid grey;"
                                                                         value="Pending" disabled></textarea>
-                                                                    <label for="floatingTextarea2">Catatan</label> 
-                                                                </div>-->
+                                                                </div>
                                                                 <div class="mb-3">
-                                                                    <label for="exampleInputEmail1"
-                                                                        class="form-label">Status</label>
-                                                                    <input type="text" class="form-control" id="nama"
-                                                                        value="Pending" placeholder="Tanggal Kembali"
-                                                                        style="border: 2px solid grey;" disabled>
+                                                                    <label for="status" class="form-label">Status</label>
+                                                                    <input type="text" class="form-control" id="status" readonly>
                                                                 </div>
                                                                 <hr class="mx-auto">
-                                                                <a class="btn btn-outline-danger"
-                                                                    onclick="$('#deskripsi').removeClass('is-active')">CLOSE</a>
+                                                                <button type="button" class="btn btn-outline-danger"
+                                                                    onclick="$('#deskripsi').removeClass('is-active')">CLOSE</button>
                                                             </form>
                                                         </div>
                                                     </div>
@@ -182,9 +287,9 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        <!-- </div>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </section>
