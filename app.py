@@ -56,9 +56,25 @@ TOKEN_KEY = 'mytoken'
 #         msg = ' There was a problem logging you in'
 #         return redirect(url_for('login', msg=msg))
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
-    return render_template('index.html')
+    token_receive = request.cookies.get("mytoken")
+    try:
+        if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({'username': payload['id']})
+        else:
+            user_info = None
+        
+        articles = db.articles.find().sort("tanggal", -1).limit(3)
+        
+        return render_template('index.html', user_info=user_info, articles=articles)
+    
+    except jwt.ExpiredSignatureError:
+        return render_template("index.html")
+    
+    except jwt.exceptions.DecodeError:
+        return render_template("index.html")
 
 @app.route('/login_admin', methods=['GET'])
 def login_admin():
@@ -72,9 +88,81 @@ def buku_admin():
 def peminjaman_admin():
     return render_template('peminjaman_admin.html')
 
-@app.route('/login_user', methods=['GET'])
-def login_user():
-    return render_template('login_user.html')
+@app.route("/login")
+def login():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({'username': payload['id']})
+            if user_info:
+                return redirect(url_for('home'))
+        
+        return render_template("login.html")
+    
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return render_template("login.html")
+    
+@app.route("/sign_in", methods=["POST"])
+def sign_in():
+    # Sign in
+    username_receive = request.form["username_give"]
+    password_receive = request.form["password_give"]
+    pw_hash = hashlib.sha256(password_receive.encode("utf-8")).hexdigest()
+    result = db.user.find_one(
+        {
+            "username": username_receive,
+            "password": pw_hash,
+        }
+    )
+    print(result)
+    if result:
+        payload = {
+            "id": username_receive,
+            # the token will be valid for 24 hours
+            "exp": datetime.utcnow() + timedelta(seconds=60 * 60 * 24),
+            "role": result["role"],
+        }
+        print(payload)
+        token = jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+
+        return jsonify(
+            {
+                "result": "success",
+                "token": token,
+            }
+        )
+    # Let's also handle the case where the id and
+    # password combination cannot be found
+    else:
+        return jsonify(
+            {
+                "result": "fail",
+                "msg": "Kami tidak dapat menemukan pengguna dengan kombinasi username/password tersebut.",
+            }
+        )
+    
+@app.route("/user_signup", methods=["POST"])
+def user_signup():
+    username_receive = request.form["username"]
+    nama_receive = request.form["nama_lengkap"]
+    pw_receive = request.form["password"]
+    pw_hash = hashlib.sha256(pw_receive.encode("utf-8")).hexdigest()
+
+    user_exists = bool(db.user.find_one({"username": username_receive}))
+    if user_exists:
+        return jsonify({"result": "error_uname", "msg": f"An account with username {username_receive} is already exists. Please Login!"})
+    else:
+        doc = {
+        "username": username_receive,                              
+        "name": nama_receive,
+        "password": pw_hash,                                      
+        "profile_pic_real": "profile_pics/profile_placeholder.png", 
+        "profile_info": "",
+        "role": "member"                                          
+        }
+        db.user.insert_one(doc)
+        return jsonify({"result": "success"})
 
 @app.route('/buku', methods=['GET'])
 def buku():
