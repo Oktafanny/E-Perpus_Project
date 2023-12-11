@@ -1,16 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About</title>
-</head>
-
-<body>
-    <!doctype html>
-    <html lang="en">
-
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -18,6 +8,7 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <!-- Style CSS -->
         <link href="{{ url_for('static', filename='user/about.css') }}" rel="stylesheet">
+        <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
         <!-- Bootstrap CSS -->
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
             integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
@@ -40,7 +31,16 @@
     </head>
 
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
+        {% if user_info %}
+        {% if user_info.role == 'admin' %}
+            {% include 'navbar_check/navbar_admin.html' %}
+        {% elif user_info.role == 'member' %}
+            {% include 'navbar_check/navbar_member.html' %}
+        {% endif %}
+    {% else %}
+        {% include 'navbar_check/navbar_viewer.html' %}
+    {% endif %}
+        <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
             <div class="container">
                 <a class="navbar-brand text-primary" href="/">E-Perpus</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
@@ -79,16 +79,17 @@
                     </ul>
                 </div>
             </div>
-        </nav>
+        </nav> -->
 
 
         <section class="about">
             <div class="container-fluid pt-5">
                 <div class="container">
                     <div class="clearfix pt-5">
-                        <img src="assets/perpustakaan.jpg" class="col-md-6 float-md-end crop-img px-5" width="300"
+                        <img src="{{ url_for('static', filename='assets/perpustakaan.jpg') }}" class="col-md-6 float-md-end crop-img px-5" width="300"
                             height="300" />
-                        <h1>Tentang Kami</h1>
+                        <h1 style="font-size: 30px; font-weight: bold; font-family: 'Times New Roman', Times, serif;">Tentang Kami</h1>
+                        <hr/>
                         <p>
                             Selamat datang di e-Perpus, perpustakaan daring inovatif yang dirancang untuk memenuhi
                             kebutuhan literasi dan pengetahuan Anda. e-Perpus menjadi jembatan antara pembaca dan dunia
@@ -149,41 +150,33 @@
                                 </ol>
                                 </p>
                             </div>
-
                         </div>
                     </div>
 
                     <div class="fasilitas">
-                        <h1 class="pb-2">Fasilitas</h1>
+                        <h1 class="pb-2" style="font-size: 30px; font-weight: bold; font-family: 'Times New Roman', Times, serif;">Fasilitas</h1>
                         <div class="row">
                             <div class="fasilitas-col">
-                                <img src="assets/ruang-baca.jpg">
+                                <img src="{{ url_for('static', filename='assets/ruang_baca.jpg') }}">
                                 <div class="layer">
                                     <h3>Ruang Baca</h3>
                                 </div>
                             </div>
                             <div class="fasilitas-col">
-                                <img src="assets/buku.jpg">
+                                <img src="{{ url_for('static', filename='assets/buku.jpg') }}">
                                 <div class="layer">
                                     <h3>Koleksi Buku</h3>
                                 </div>
                             </div>
                             <div class="fasilitas-col">
-                                <img src="assets/rb.jpg">
+                                <img src="{{ url_for('static', filename='assets/rb.jpg') }}">
                                 <div class="layer">
                                     <h3>Hotspot Area</h3>
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
-
                 </div>
-
-
-
-
             </div>
 
         </section>

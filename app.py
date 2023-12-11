@@ -117,16 +117,30 @@ def proses_pinjam(id):
   
     return jsonify({"msg": 'Peminjaman Berhasil di tambahkan, Silahkan beralih ke halaman Riwayat untuk mengecek status Peminjaman'})
 
-@app.route('/hal_riwayat')
-def riwayat_html():
-    return render_template('riwayat.html')
+# @app.route('/hal_riwayat')
+# def riwayat_html():
+#     return render_template('riwayat.html')
  
 @app.route('/riwayat', methods=['GET'])
 def riwayat():
-    book_list = list(db.book.find({},{}))
-    peminjaman_list = list(db.peminjaman.find({},{}))
-    return jsonify({'books': book_list, 'peminjaman':peminjaman_list})
-    # return render_template('riwayat.html')
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        book_list = list(db.book.find({},{}))
+        peminjaman_list = list(db.peminjaman.find({},{}))
+        return render_template('riwayat.html', books= book_list, peminjaman=peminjaman_list, user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+
 
 @app.route('/daftar_peminjaman', methods=['GET'])
 def daftar():
@@ -302,8 +316,26 @@ def hal_buku():
 
 @app.route('/buku', methods=['GET'])
 def buku():
-    book_list = list(db.book.find({},{}))
-    return jsonify({'books': book_list})
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        book_list = list(db.book.find({},{}))
+        user_info = db.user.find_one({'username': payload["id"]})
+        return render_template('buku.html', user_info=user_info, book_list=book_list)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+    
+    # book_list = list(db.book.find({},{}))
+    # return render_template('buku.html', books=book_list)
+    # return jsonify({'books': book_list})
 
 @app.route('/deskripsi/<int:book_id>', methods=['GET'])
 def deskripsi(book_id):
@@ -320,15 +352,60 @@ def deskripsi(book_id):
 
 @app.route('/profil', methods=['GET'])
 def profil():
-    return render_template('profil.html')
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        return render_template('profil.html', user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+
 
 @app.route('/contact_us', methods=['GET'])
 def contact_us():
-    return render_template('contact.html')
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        return render_template('contact.html', user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+
 
 @app.route('/about', methods=['GET'])
 def about():
-    return render_template('about.html')
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        return render_template('about.html', user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
