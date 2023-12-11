@@ -141,6 +141,28 @@ def sign_in():
             }
         )
 
+@app.route("/user_signup", methods=["POST"])
+def user_signup():
+    username_receive = request.form["username"]
+    nama_receive = request.form["nama_lengkap"]
+    pw_receive = request.form["password"]
+    pw_hash = hashlib.sha256(pw_receive.encode("utf-8")).hexdigest()
+
+    user_exists = bool(db.user.find_one({"username": username_receive}))
+    if user_exists:
+        return jsonify({"result": "error_uname", "msg": f"An account with username {username_receive} is already exists. Please Login!"})
+    else:
+        doc = {
+        "username": username_receive,                              
+        "name": nama_receive,
+        "password": pw_hash,                                      
+        "profile_pic_real": "profile_pics/profile_placeholder.png", 
+        "profile_info": "",
+        "role": "member"                                          
+        }
+        db.user.insert_one(doc)
+        return jsonify({"result": "success"})
+    
 @app.route("/admin_reg")
 def admin_register():
     token_receive = request.cookies.get("mytoken")
