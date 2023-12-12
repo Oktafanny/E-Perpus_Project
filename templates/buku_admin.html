@@ -23,9 +23,6 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    <!-- Style CSS -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
-
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -75,7 +72,114 @@
         width: 45%;
       }
     </style> -->
+    <script>
+      $(document).ready(function () {
+            show_book();
+            bsCustomFileInput.init()
+        });
 
+      function show_book(){
+        $('#cards-box').empty();
+        $.ajax({
+          type: "GET",
+          url: "/show_book",
+          data: {},
+          success: function (response) {
+            console.log(response)
+            let rows_book = response["books"];
+            for (let i = 0; i < rows_book.length; i++) {
+                let judul = rows_book[i]["judul"];
+                let genre = rows_book[i]["genre"];
+                let tahun = rows_book[i]["tahun"];
+                let pengarang = rows_book[i]["pengarang"];
+                let sampul = rows_book[i]["sampul"];
+
+                let temp_html = `
+                    <div class="col">
+                        <div class="card shadow h-100">
+                            <img src="/static/book_pics/${sampul}" class="card-buku">
+                            <div class="card-body">
+                                <h5 class="card-title mb-2">${judul}</h5>
+                                <p class="card-text">Genre : ${genre}</p>
+                                <p>Penulis : ${pengarang}</p>
+                                <p>Tahun : ${tahun}</p>
+                                <a onclick="edit()" class="btn btn-primary col rounded-pill">Edit</a>
+                                <a onclick="hapus()" class="btn btn-danger col rounded-pill">Hapus</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                $("#cards-box").append(temp_html);
+            }
+          },
+        });
+      }
+
+      function save() {
+        let judul = $('#judul').val();
+        let genre = $('#genre').val();
+        let tahun = $('#tahun').val();
+        let pengarang = $('#pengarang').val();
+        let stok = $('#stok').val();
+        let sampul = $("#sampul").prop("files")[0];
+        let sinopsis = $('#sinopsis').val();
+  
+        // Memeriksa apakah semua input telah diisi
+        if (judul && genre && tahun && pengarang && stok && sampul && sinopsis) {
+            let form_data = new FormData();
+            form_data.append("judul", judul);
+            form_data.append("genre", genre);
+            form_data.append("tahun", tahun);
+            form_data.append("pengarang", pengarang);
+            form_data.append("stok", stok);
+            form_data.append("sampul", sampul);
+            form_data.append("sinopsis", sinopsis);
+            $.ajax({
+                type: "POST",
+                url: "/save_buku",
+                data: form_data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function (response) {
+                    console.log(response);
+                    alert(response["msg"])
+                    window.location.reload();
+                },
+            });
+        } else {
+            // Jika ada input yang belum diisi, berikan pesan kesalahan kepada pengguna
+            alert("Mohon lengkapi semua input sebelum menyimpan.");
+        }
+      }
+
+      // function save() {
+      //     let judul = $('#judul').val();
+      //     let genre = $('#genre').val();
+      //     let tahun = $('#tahun').val();
+      //     let pengarang = $('#pengarang').val();
+      //     let stok = $('#stok').val();
+      //     let sampul = $("#sampul").prop("files")[0];
+      //     let sinopsis = $('#sinopsis').val();
+      //     $.ajax({
+      //         type: "POST",
+      //         url: "/input_buku",
+      //         data: { 
+      //           judul_give: judul,
+      //           genre_give: genre,
+      //           tahun_give: tahun,
+      //           pengarang_give: pengarang,
+      //           stok_give: stok,
+      //           sampul_give: sampul,
+      //           sinopsis_give: sinopsis
+      //          },
+      //         success: function (response) {
+      //             alert(response["msg"])
+      //             window.location.reload();
+      //         }
+      //     });
+      // }
+  </script>
 </head>
 <body>
   <!-- navbar -->
@@ -108,7 +212,7 @@
   <h2>TAMBAHKAN BUKU</h2>
   <hr class="mx-auto">
   <div class="container justify-content-center">
-    <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center">+Tambah</a>
+    <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center" style="width: 100%;">+Tambah</a>
   </div>
 </div>
 
@@ -116,7 +220,7 @@
 <!-- Card -->
 <div class="mycards">
   <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
-    <div class="col">
+    <!-- <div class="col">
         <div class="card shadow h-100">
             <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
                 class="card-buku">
@@ -129,7 +233,7 @@
                 <a onclick="hapus()" class="btn btn-danger col rounded-pill">Hapus</a>
             </div>
         </div>
-    </div>
+    </div> -->
   </div>
 </div>
 
@@ -172,7 +276,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button onclick='save()' type="button" class="btn btn-primary" data-bs-dismiss="modal">Simpan</button>
+        <a onclick="save()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Simpan</a>
       </div>
     </div>
   </div>
