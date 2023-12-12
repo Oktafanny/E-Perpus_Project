@@ -8,7 +8,8 @@
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    
+    <!-- Style CSS -->
+    <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
     <!-- Bulma CSS -->
     <link
       rel="stylesheet"
@@ -32,8 +33,39 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     
     <!-- Style CSS -->
-    <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
+    <!-- <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet"> -->
 
+    <script>
+      $(document).ready(function () {
+        search();
+      });
+
+      function search() {
+        let search = $('#input-name').val().toLowerCase().trim();
+        $('#cards-box .card').each(function() {
+            let cardTitle = $(this).find('.card-title').text().toLowerCase();
+            if (cardTitle.includes(search)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+      }
+
+      // function search(){
+      //   $('#input-name').on('input', function() {
+      //     let searchText = $(this).val().toLowerCase().trim();
+      //     $('#cards-box .card').each(function() {
+      //       let cardTitle = $(this).find('.card-title').text().toLowerCase();
+      //       if (cardTitle.includes(searchText)) {
+      //           $(this).show();
+      //       } else {
+      //           $(this).hide();
+      //       }
+      //     });
+      //   });
+      // }
+    </script>
 </head>
 <body>
   <!-- navbar -->
@@ -82,7 +114,7 @@
   <hr class="mx-auto">
   <div class="search-box d-flex justify-content-center">
     <input id="input-name" class="form-control rounded-pill" style="margin-right: 0.5rem" placeholder="Cari buku...">
-    <button class="btn btn-primary rounded-pill" onclick=""><i data-feather="search"></i></button>
+    <button class="btn btn-primary rounded-pill" onclick="search()"><i data-feather="search"></i></button>
   </div>
 </div>
 
@@ -108,7 +140,7 @@
               <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
                   class="card-buku">
               <div class="card-body">
-                  <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
+                  <h5 class="card-title mb-2">Lorenza : Pagi Terakhir di Rusia</h5>
                   <p class="card-text">Genre : Romance</p>
                   <p>Penulis : Prisca Primasari</p>
                   <p>Tahun : 2011</p>
@@ -194,6 +226,7 @@
       </div>
     </div>
   </div>
+</div>
 
 <!-- Footer -->
 <footer class="copyright mt-3 shadow">

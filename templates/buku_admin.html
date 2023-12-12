@@ -101,8 +101,8 @@
                                 <p class="card-text">Genre : ${genre}</p>
                                 <p>Penulis : ${pengarang}</p>
                                 <p>Tahun : ${tahun}</p>
-                                <a onclick="edit()" class="btn btn-primary col rounded-pill">Edit</a>
-                                <a onclick="hapus()" class="btn btn-danger col rounded-pill">Hapus</a>
+                                <a onclick="edit(${rows_book[i]['_id']})" class="btn btn-primary col rounded-pill">Edit</a>
+                                <a onclick="hapus(${rows_book[i]['_id']})" class="btn btn-danger col rounded-pill">Hapus</a>
                             </div>
                         </div>
                     </div>
@@ -177,6 +177,39 @@
     //         }
     //     });
     // }
+
+    function hapus(bookId) {
+    $.ajax({
+        type: "POST",
+        url: `/delete_book/${bookId}`,
+        success: function(response) {
+            alert(response['msg']);
+            window.location.reload();
+            show_book();
+        },
+        error: function(error) {
+            alert("Terjadi kesalahan saat menghapus buku.");
+            console.error(error);
+        }
+    });
+}
+
+    function edit() {
+      let judul = $('#judul').val();
+      let genre = $('#genre').val();
+      let tahun = $('#tahun').val();
+      let pengarang = $('#pengarang').val();
+      let stok = $('#stok').val();
+      let sampul = $("#sampul")[0].files[0];
+      let sinopsis = $('#sinopsis').val();
+
+      $('#input-buku #judul').val(judul);
+      $('#input-buku #genre').val(genre);
+      $('#input-buku #tahun').val(tahun);
+      $('#input-buku #pengarang').val(pengarang);
+      $('#input-buku #stok').val(stok);
+      $('#input-buku #sinopsis').val(sinopsis);
+    }
   </script>
 </head>
 

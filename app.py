@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from http import client
 from pymongo import MongoClient
+from bson import ObjectId
 import jwt
 from datetime import datetime, timedelta
 import hashlib
@@ -143,7 +144,49 @@ def save_buku():
     db.book.insert_one(doc)
     return jsonify({'msg': 'Data buku berhasil disimpan'})
 
+@app.route('/delete_book/<bookId>', methods=['POST'])
+def delete_book(bookId):
+    db.book.delete_one({'_id': ObjectId(bookId)})
+    return jsonify({'msg': f'Buku dengan ID {bookId} berhasil dihapus.'})
 
+@app.route('/edit_buku', methods=['POST'])
+def edit_buku(bookId):
+    judul = request.form.get('judul')
+    genre = request.form.get('genre')
+    tahun = int(request.form.get('tahun'))
+    pengarang = request.form.get('pengarang')
+    stok = int(request.form.get('stok'))
+
+    # file = request.files['sampul']
+    # filename = secure_filename(file.filename)
+    # extension = filename.split(".")[-1]
+    # file.save = f'book_pics/{judul}.{extension}'
+    today = datetime.now()
+    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+    file = request.files["sampul"]
+    extension = file.filename.split('.')[-1]
+    filename = f'static/book_pics/post-{mytime}.{extension}'
+    file.save(filename)
+    
+    # file = request.files['sampul']
+    # filename = secure_filename(file.filename)
+    # extension = filename.split(".")[-1]
+    # file_path = f"book_pics/{judul}.{extension}"
+    # file.save("./static/" + file_path)
+
+    sinopsis = request.form.get('sinopsis')
+
+    db.book.update_one(
+        {'_id': ObjectId(bookId)},
+        {'judul': judul,
+        'genre': genre,
+        'tahun': tahun,
+        'pengarang': pengarang,
+        'stok': stok,
+        'sampul': filename,
+        'sinopsis': sinopsis})
+    return jsonify({'msg': 'Data buku berhasil diubah'})
 
 # @app.route('/hal_riwayat')
 # def riwayat_html():
