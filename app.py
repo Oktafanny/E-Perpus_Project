@@ -37,7 +37,7 @@ app = Flask(__name__)
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
 app.config['UPLOAD_FOLDER'] = '/static/profile_pics'
-# app.config['UPLOAD_FOLDER'] = '/static/book_pics'
+app.config['UPLOAD_FOLDER'] = '/static/book_pics'
 
 SECRET_KEY = 'SPARTA'
 TOKEN_KEY = 'mytoken'
@@ -134,7 +134,68 @@ def save_buku():
     db.book.insert_one(doc)
     return jsonify({'msg': 'Data buku berhasil disimpan'})
 
+@app.route('/edit_book', methods=['POST'])
+def edit_book(bookId):
+    try:
+        judul = request.form.get('judul')
+        genre = request.form.get('genre')
+        tahun = int(request.form.get('tahun'))
+        pengarang = request.form.get('pengarang')
+        stok = int(request.form.get('stok'))
+        sinopsis = request.form.get('sinopsis')
+        print(judul)
+        db.book.update_one(
+            {"_id": int(bookId)},
+            {"$set": {
+                "judul": judul,
+                "genre": genre,
+                "tahun": tahun,
+                "pengarang": pengarang,
+                "stok": stok,
+                "sinopsis": sinopsis
+            }}
+        )
+        return redirect(url_for("buku_admin"))
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
 
+# @app.route('/edit_book/<id>', methods=['POST'])
+# def edit_book(bookId):
+#     judul = request.form.get('judul')
+#     genre = request.form.get('genre')
+#     tahun = int(request.form.get('tahun'))
+#     pengarang = request.form.get('pengarang')
+#     stok = int(request.form.get('stok'))
+#     sinopsis = request.form.get('sinopsis')
+
+#     db.book.update_one(
+#         {"_id": int(bookId)},
+#         {
+#             "$set": {
+#                 "judul": judul,
+#                 "genre": genre,
+#                 "tahun": tahun,
+#                 "pengarang": pengarang,
+#                 "stok": stok,
+#                 "sinopsis": sinopsis
+#             }
+#         }
+#     )
+
+#     return jsonify({"message": "Buku berhasil diperbarui"})
+
+@app.route('/delete_book/<book_id>', methods=['POST'])
+def delete_book(book_id):
+    token_receive = request.cookies.get("mytoken")
+    try:
+        book_id = int(book_id)
+        book = db.book.find_one_and_delete({'_id': book_id})
+        if book:
+            return jsonify({'message': f'Buku dengan ID {book_id} berhasil dihapus'})
+        else:
+            return jsonify({'message': f'Buku dengan ID {book_id} tidak ditemukan'}), 404
+    except ValueError:
+        return jsonify({'message': 'ID buku harus berupa angka'}), 400
 
 # @app.route('/hal_riwayat')
 # def riwayat_html():

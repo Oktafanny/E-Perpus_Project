@@ -103,8 +103,8 @@
                                 <p class="card-text">Genre : ${genre}</p>
                                 <p>Penulis : ${pengarang}</p>
                                 <p>Tahun : ${tahun}</p>
-                                <a onclick="edit()" class="btn btn-primary col rounded-pill">Edit</a>
-                                <a onclick="hapus()" class="btn btn-danger col rounded-pill">Hapus</a>
+                                <a onclick="edit('{{ bookId }}')" class="btn btn-primary col rounded-pill">Edit</a>
+                                <a onclick="hapus('{{ book_id }}')" class="btn btn-danger col rounded-pill">Hapus</a>
                             </div>
                         </div>
                     </div>
@@ -179,6 +179,54 @@
       //         }
       //     });
       // }
+
+      function edit(id) {
+        let judul = $('#judul').val();
+        let genre = $('#genre').val();
+        let tahun = $('#tahun').val();
+        let pengarang = $('#pengarang').val();
+        let stok = $('#stok').val();
+        let sinopsis = $('#sinopsis').val();
+
+        $.ajax({
+            type: "POST",
+            url: "/edit_book",
+            data: {
+                "judul": judul,
+                "genre": genre,
+                "tahun": tahun,
+                "pengarang": pengarang,
+                "stok": stok,
+                "sinopsis": sinopsis
+            },
+            success: function (response) {
+                alert(response.message);
+                show_book();
+            },
+            error: function (error) {
+                console.error("Error:", error);
+                alert("Terjadi kesalahan saat menyimpan perubahan buku.");
+            },
+        });
+      }
+
+      function hapus(id) {
+        let confirmation = confirm("Apakah Anda yakin ingin menghapus buku ini?");
+        if (confirmation) {
+            $.ajax({
+                type: "POST",
+                url: `/delete_book/${id}`,
+                success: function (response) {
+                    alert(response.message);
+                    show_book(); // Memuat ulang card setelah menghapus
+                },
+                error: function (error) {
+                    console.error("Error:", error);
+                    alert("Terjadi kesalahan saat menghapus buku.");
+                },
+            });
+        }
+      }
   </script>
 </head>
 <body>
