@@ -168,9 +168,21 @@ def buku_admin():
 def peminjaman_admin():
     return render_template('peminjaman_admin.html')
 
+@app.route("/profil/<username>")
+def user(username):
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        status = username == payload["id"]  
+        user_info = db.user.find_one({'username': payload['id']})
+        user_data = db.user.find_one({"username": username}, {"_id": False})
+        return render_template("profil.html", user_info=user_info, user_data=user_data,status=status)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 @app.route("/update_profile", methods=["POST"])
 def save_img():
-    token_receive = request.cookies.get(TOKEN_KEY)
+    token_receive = request.cookies.get("mytoken")
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         username = payload["id"]
