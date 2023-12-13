@@ -73,7 +73,7 @@
   <script>
     $(document).ready(function () {
       show_book();
-      bsCustomFileInput.init()
+      // bsCustomFileInput.init()
     });
 
     function show_book() {
@@ -91,7 +91,9 @@
             let tahun = rows_book[i]["tahun"];
             let pengarang = rows_book[i]["pengarang"];
             let sampul = rows_book[i]["sampul"];
+            let id = rows_book[i]["_id"];
 
+            console.log(id)
             let temp_html = `
                     <div class="col">
                         <div class="card shadow h-100">
@@ -101,7 +103,7 @@
                                 <p class="card-text">Genre : ${genre}</p>
                                 <p>Penulis : ${pengarang}</p>
                                 <p>Tahun : ${tahun}</p>
-                                <a onclick="edit('${rows_book[i]['_id']}')" class="btn btn-primary col rounded-pill">Edit</a>
+                                <a onclick="edit(${id})" class="btn btn-primary col rounded-pill">Edit</a>
                                 <a onclick="hapus('${rows_book[i]['_id']}')" class="btn btn-danger col rounded-pill">Hapus</a>
                             </div>
                         </div>

@@ -33,11 +33,12 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     
     <!-- Style CSS -->
-    <!-- <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet"> -->
+    <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
 
     <script>
       $(document).ready(function () {
-        search();
+      show_book();
+      bsCustomFileInput.init()
       });
 
       function search() {
@@ -52,6 +53,43 @@
         });
       }
 
+    function show_book() {
+      $('#cards-box').empty();
+      $.ajax({
+        type: "GET",
+        url: "/show_book",
+        data: {},
+        success: function (response) {
+          console.log(response)
+          let rows_book = response["books"];
+          for (let i = 0; i < rows_book.length; i++) {
+            let judul = rows_book[i]["judul"];
+            let genre = rows_book[i]["genre"];
+            let tahun = rows_book[i]["tahun"];
+            let pengarang = rows_book[i]["pengarang"];
+            let sampul = rows_book[i]["sampul"];
+
+            let temp_html = `
+                    <div class="col">
+                        <div class="card shadow h-100">
+                            <img src="../${sampul}" class="card-buku">
+                            <div class="card-body">
+                                <h5 class="card-title mb-2">${judul}</h5>
+                                <p class="card-text">Genre : ${genre}</p>
+                                <p>Penulis : ${pengarang}</p>
+                                <p>Tahun : ${tahun}</p>
+                                <a href="/peminjaman{{id}}" class="btn btn-primary col rounded-pill">Pinjam</a>
+                                <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            $("#cards-box").append(temp_html);
+          }
+        },
+      });
+    }
+
       // function search(){
       //   $('#input-name').on('input', function() {
       //     let searchText = $(this).val().toLowerCase().trim();
@@ -65,18 +103,45 @@
       //     });
       //   });
       // }
+
+      function showDescription(bookId) {
+            $.ajax({
+                type: "GET",
+                url: `/deskripsi/${bookId}`,
+                data: {},
+                success: function (response) {
+                    let book = response['book'];
+                    $('#deskripsi .card-img-top').attr('src', '/static/images/' + book['image']);
+                    $('#deskripsi .card-judul').text(book['title']);
+                    $('#deskripsi .card-genre').text(`Genre: ${book['genre']}`);
+                    $('#deskripsi .card-tahun').text(`Tahun: ${book['tahun']}`);
+                    $('#deskripsi .card-penulis').text(`Penulis: ${book['penulis']}`);
+                    $('#deskripsi .card-sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
+                    $('#deskripsi .card-stok').text(`Stock: ${book['stock']}`);
+
+                    // Tampilkan modal deskripsi
+                    $('#deskripsi').addClass('is-active');
+                }
+            });
+        }
+
+      function logout() {
+        $.removeCookie('mytoken', { path: '/' });
+        alert('Signed out!');
+        window.location.href = "/login";
+      }
     </script>
 </head>
 <body>
   <!-- navbar -->
   {% if user_info %}
-  {% if user_info.role == 'admin' %}
-    {% include 'navbar_check/navbar_admin.html' %}
-  {% elif user_info.role == 'member' %}
-    {% include 'navbar_check/navbar_member.html' %}
-  {% endif %}
+    {% if user_info.role == 'admin' %}
+        {% include 'navbar_check/navbar_admin.html' %}
+    {% elif user_info.role == 'member' %}
+        {% include 'navbar_check/navbar_member.html' %}
+    {% endif %}
 {% else %}
-  {% include 'navbar_check/navbar_viewer.html' %}
+    {% include 'navbar_check/navbar_viewer.html' %}
 {% endif %}
 
   <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
@@ -127,10 +192,10 @@
                   class="card-buku">
               <div class="card-body">
                   <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-                  <p class="card-text">Genre : Romance</p>
+                  <p>Genre : Romance</p>
                   <p>Penulis : Prisca Primasari</p>
                   <p>Tahun : 2011</p>
-                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
+                  <a href="/peminjaman{{id}}" class="btn btn-primary col rounded-pill">Pinjam</a>
                   <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
               </div>
           </div>
@@ -195,28 +260,21 @@
       <div class="modal-body">
         <div class="row justify-content-between mt-2">
           <div class="col-md-4">
-            <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+            <img src="{{sampul}}"
                 class="card-img-top">
           </div>
           <div class="col-md-8">
             <ul>
-              <h5 class="card-title mb-3">Éclair : Pagi Terakhir di Rusia</h5>
-              <p class="card-text">Genre : Romance</p>
-              <p>Penulis : Prisca Primasari</p>
-              <p>Tahun : 2011</p>
+              <h5 class="card-judul mb-3">Éclair : {{ judul }}</h5>
+              <p class="card-genre">Genre : {{ genre }}</p>
+              <p class="card-penulis">Penulis : {{ pengarang }}</p>
+              <p class="card-tahun">Tahun : {{ tahun }}</p>
+              <p class="card-stok">Stok : {{ stok }}</p>
             </ul>
           </div>
           <h5 class="card-title mt-2">SINOPSIS</h5>
-              <p>
-                Seandainya bisa, aku ingin terbang bersamamu dan burung-burung di atas sana. 
-                Aku ingin terus duduk bersamamu di bawah teduhnya pohon—berbagi éclair, 
-                ditemani matahari dan angin sepoi-sepoi. Aku ingin terus menggenggam jari-jemarimu, 
-                berbagi rasa dan hangat tubuh—selamanya. Sayangnya, gravitasi menghalangiku. 
-                Putaran bumi menambah setiap detik di hari-hari kita. Seperti lilin yang terus terbakar, 
-                tanpa terasa waktu kita pun tidak tersisa banyak. Semua terasa terburu-buru. 
-                Perpisahan pun terasa semakin menakutkan. Aku rebah di tanah. 
-                Memejamkan mata kuat-kuat karena air mata yang menderas. “Aku masih di sini,” bisikmu, selirih angin sore. 
-                Tapi aku tak percaya. Bagaimana jika saat aku membuka mata nanti, kau benar-benar tiada?
+              <p class="card-sinopsis">
+                {{ sinopsis }}
               </p>
           </div>
         </div>

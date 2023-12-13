@@ -159,6 +159,7 @@ def save_buku():
         'sinopsis': sinopsis
 
     }
+    print(doc)
     db.book.insert_one(doc)
     return jsonify({'msg': 'Data buku berhasil disimpan'})
 
