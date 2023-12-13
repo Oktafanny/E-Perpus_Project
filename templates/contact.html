@@ -28,7 +28,33 @@
         integrity="sha384-l2VRKbYi1aGRZ5oxk/xDeQPQq5Ffmvj8ZkKW1D5FA7kFeM4M6F7L/lUn2P5xkiM+T" crossorigin="anonymous">
 
 </head>
+<script>
+    $(document).ready(function() {
+        $("#contact_us").submit(function(e) {
+            e.preventDefault();
+            var nama_lengkap = $("#nama_lengkap").val();
+            var no_hp = $("#no_hp").val();
+            var pesan = $("#pesan").val();
 
+            $.ajax({
+                type: "POST",
+                url: "/contact",
+                data: {
+                    nama_lengkap: nama_lengkap,
+                    no_hp: no_hp,
+                    pesan: pesan
+                },
+                success: function(response) {
+                    alert(response.msg);
+                    $('form#contact_us')[0].reset();
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        });
+    });
+</script>
 <body>
     {% if user_info %}
     {% if user_info.role == 'admin' %}
@@ -72,13 +98,13 @@
     <div class="container pt-5 pb-5" style="background-image: url(../static/misc/buku.jpg);">
         <div class="wrap mx-auto text-center pb-5 pt-5" style="width: 800px; background: white; border-radius: 10px;">
             <h3 class="pb-2 text-center">Contact Us</h3>
-            <form action="" id="contact_us">
+            <form action="" id="contact_us" method="POST">
                 <div class="row pb-3 pt-3">
                     <div class="col-md-6 mx-auto text-center">
-                        <input class="form-control form-control-lg mb-3" type="text" placeholder="Nama">
-                        <input class="form-control form-control-lg mb-3" type="text" placeholder="No Handphone">
-                        <textarea class="form-control form-control-lg" placeholder="Pesan" rows="3"></textarea>
-                        <button type="send" class="btn btn-primary mt-3">Kirim</button>
+                        <input class="form-control form-control-lg mb-3" type="text" placeholder="Nama" id="nama_lengkap" name="nama_lengkap">
+                        <input class="form-control form-control-lg mb-3" type="text" placeholder="No Handphone" id="no_hp" name="no_hp">
+                        <textarea class="form-control form-control-lg" placeholder="Pesan" rows="3" id="pesan" name="pesan"></textarea>
+                        <button type="submit" name="simpan" id="btnsimpan" class="btn btn-primary mt-3">Kirim</button>
                     </div>
                 </div>
             </form>

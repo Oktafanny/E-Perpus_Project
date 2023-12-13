@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from http import client
 from pymongo import MongoClient
 import jwt
+import pytz
 from datetime import datetime, timedelta
 import hashlib
 from flask import (
@@ -380,25 +381,39 @@ def profil():
         msg = 'There was a problem logging you in'
         return redirect(url_for('login', msg=msg))
 
-
-@app.route('/contact_us', methods=['GET'])
-def contact_us():
+@app.route("/contact", methods=['GET', 'POST'])
+def hubungi():
     token_receive = request.cookies.get("mytoken")
     try:
-        payload = jwt.decode(
-            token_receive,
-            SECRET_KEY,
-            algorithms=['HS256']
-        )
-        user_info = db.user.find_one({'username': payload["id"]})
-        return render_template('contact.html', user_info=user_info)
-    except jwt.ExpiredSignatureError:
-        msg = 'Your token has expired'
-        return redirect(url_for('login', msg=msg))
-    except jwt.exceptions.DecodeError:
-        msg = 'There was a problem logging you in'
-        return redirect(url_for('login', msg=msg))
+        if token_receive:
+            payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+            user_info = db.user.find_one({'username': payload['id']})
+        else:
+            user_info = None
+        if request.method == 'POST':
 
+            nama_lengkap = request.form['nama_lengkap']
+            no_hp = request.form['no_hp']
+            pesan = request.form['pesan']
+            timezone = pytz.timezone('Asia/Jakarta')
+            current_datetime = datetime.now(timezone)
+            tanggal_kirim = current_datetime.strftime('%d/%m/%y - %H:%M')
+            timestamp = current_datetime.timestamp()
+            doc = {
+                "nama_lengkap":nama_lengkap,
+                "no_hp" : no_hp,
+                "pesan" : pesan,
+                "tanggal_kirim" : tanggal_kirim,
+                "timestamp": timestamp,
+            }
+
+            db.hubungi.insert_one(doc)
+            return jsonify({"result": "success", "msg": "Pesan berhasil dikirim"})
+
+        else:
+            return render_template("contact.html",user_info=user_info)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
 
 @app.route('/about', methods=['GET'])
 def about():
