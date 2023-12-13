@@ -1,34 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>E-Perpus</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <!-- Style CSS -->
-  <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
-  <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-  <!-- Bulma CSS -->
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
-  <!-- Google Font -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-  <!-- Feather Icon -->
-  <script src="https://unpkg.com/feather-icons"></script>
-  <!-- JS -->
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-    integrity="sha384-l2VRKbYi1aGRZ5oxk/xDeQPQq5Ffmvj8ZkKW1D5FA7kFeM4M6F7L/lUn2P5xkiM+T" crossorigin="anonymous">
-</head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-Perpus</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    <!-- Style CSS -->
+    <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
+    <!-- Bulma CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
+    />
 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+    
+    <!-- Feather Icon -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    
+    <!-- JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+    
+    <!-- Style CSS -->
+    <!-- <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet"> -->
+
+    <script>
+      $(document).ready(function () {
+        search();
+      });
+
+      function search() {
+        let search = $('#input-name').val().toLowerCase().trim();
+        $('#cards-box .card').each(function() {
+            let cardTitle = $(this).find('.card-title').text().toLowerCase();
+            if (cardTitle.includes(search)) {
+                $(this).show();
+            } else {
+                $(this).hide();
+            }
+        });
+      }
+
+      // function search(){
+      //   $('#input-name').on('input', function() {
+      //     let searchText = $(this).val().toLowerCase().trim();
+      //     $('#cards-box .card').each(function() {
+      //       let cardTitle = $(this).find('.card-title').text().toLowerCase();
+      //       if (cardTitle.includes(searchText)) {
+      //           $(this).show();
+      //       } else {
+      //           $(this).hide();
+      //       }
+      //     });
+      //   });
+      // }
+    </script>
+</head>
 <body>
   <!-- navbar -->
   {% if user_info %}
@@ -40,186 +78,175 @@
 {% else %}
   {% include 'navbar_check/navbar_viewer.html' %}
 {% endif %}
+
   <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
     <div class="container">
-      <a class="navbar-brand text-primary" href="/">E-Perpus</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/buku">Buku</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/about">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/contact">Contact Us</a>
-          </li>
-          <li class="nav">
-            <a href="/login" style="border-radius: 20px;" class="btn btn-primary py-2 px-3">Masuk/Daftar</a>
-          </li>
-        </ul>
-      </div>
+        <a class="navbar-brand text-primary" href="/">E-Perpus</a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/buku">Buku</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/about">About</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" href="/contact_us">Contact Us</a>
+                </li>
+                <li class="nav">
+                    <a href="/login" style="border-radius: 20px;" class="btn btn-primary py-2 px-3">Masuk/Daftar</a>
+                </li>
+            </ul>
+        </div>
     </div>
-  </nav> -->
+</nav> -->
 
-  <!-- BUKU PAGE -->
-  <div class="wrap">
-    <h2 class="text-center fw-bold" style="font-size: 30px;">PEMINJAMAN BUKU</h2>
-    <hr class="mx-auto">
-    <div class="search-box d-flex justify-content-center">
-      <input id="input-name" class="form-control rounded-pill" style="margin-right: 0.5rem" placeholder="Cari buku...">
-      <button class="btn btn-primary rounded-pill" onclick=""><i data-feather="search"></i></button>
-    </div>
+<!-- BUKU PAGE -->
+<div class="wrap">
+  <h2>PEMINJAMAN BUKU</h2>
+  <hr class="mx-auto">
+  <div class="search-box d-flex justify-content-center">
+    <input id="input-name" class="form-control rounded-pill" style="margin-right: 0.5rem" placeholder="Cari buku...">
+    <button class="btn btn-primary rounded-pill" onclick="search()"><i data-feather="search"></i></button>
   </div>
+</div>
 
-  <!-- Card -->
+<!-- Card -->
   <div class="mycards">
     <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
       <div class="col">
-        <div class="card shadow h-100">
-          <img
-            src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
-            class="card-buku">
-          <div class="card-body">
-            <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-            <p class="card-text">Genre : Romance</p>
-            <p>Penulis : Prisca Primasari</p>
-            <p>Tahun : 2011</p>
-            <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
-            <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill"
-              data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+          <div class="card shadow h-100">
+              <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+                  class="card-buku">
+              <div class="card-body">
+                  <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
+                  <p class="card-text">Genre : Romance</p>
+                  <p>Penulis : Prisca Primasari</p>
+                  <p>Tahun : 2011</p>
+                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
+                  <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+              </div>
           </div>
-        </div>
       </div>
       <div class="col">
-        <div class="card shadow h-100">
-          <img
-            src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
-            class="card-buku">
-          <div class="card-body">
-            <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-            <p class="card-text">Genre : Romance</p>
-            <p>Penulis : Prisca Primasari</p>
-            <p>Tahun : 2011</p>
-            <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
-            <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill"
-              data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+          <div class="card shadow h-100">
+              <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+                  class="card-buku">
+              <div class="card-body">
+                  <h5 class="card-title mb-2">Lorenza : Pagi Terakhir di Rusia</h5>
+                  <p class="card-text">Genre : Romance</p>
+                  <p>Penulis : Prisca Primasari</p>
+                  <p>Tahun : 2011</p>
+                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
+                  <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+              </div>
           </div>
-        </div>
       </div>
       <div class="col">
-        <div class="card shadow h-100">
-          <img
-            src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
-            class="card-buku">
-          <div class="card-body">
-            <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-            <p class="card-text">Genre : Romance</p>
-            <p>Penulis : Prisca Primasari</p>
-            <p>Tahun : 2011</p>
-            <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
-            <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill"
-              data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+          <div class="card shadow h-100">
+              <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+                  class="card-buku">
+              <div class="card-body">
+                  <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
+                  <p class="card-text">Genre : Romance</p>
+                  <p>Penulis : Prisca Primasari</p>
+                  <p>Tahun : 2011</p>
+                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
+                  <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+              </div>
           </div>
-        </div>
       </div>
       <div class="col">
-        <div class="card shadow h-100">
-          <img
-            src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
-            class="card-buku">
-          <div class="card-body">
-            <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-            <p class="card-text">Genre : Romance</p>
-            <p>Penulis : Prisca Primasari</p>
-            <p>Tahun : 2011</p>
-            <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
-            <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill"
-              data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+          <div class="card shadow h-100">
+              <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+                  class="card-buku">
+              <div class="card-body">
+                  <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
+                  <p class="card-text">Genre : Romance</p>
+                  <p>Penulis : Prisca Primasari</p>
+                  <p>Tahun : 2011</p>
+                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
+                  <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+              </div>
           </div>
-        </div>
       </div>
     </div>
   </div>
 
-  <!-- Deskripsi -->
-  <div class="modal" id="deskripsi">
-    <div class="modal-background" onclick='$("#deskripsi").removeClass("is-active")'>
-    </div>
-    <div class="modal-content modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Deskripsi</h5>
-          <button onclick='$("#deskripsi").removeClass("is-active")' type="button" class="btn-close"
-            data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div class="row justify-content-between mt-2">
-            <div class="col-md-4">
-              <img
-                src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
+<!-- Deskripsi -->
+<div class="modal" id="deskripsi">
+  <div
+    class="modal-background"
+    onclick='$("#deskripsi").removeClass("is-active")'>
+  </div>
+  <div class="modal-content modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Deskripsi</h5>
+        <button onclick='$("#deskripsi").removeClass("is-active")' type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="row justify-content-between mt-2">
+          <div class="col-md-4">
+            <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
                 class="card-img-top">
-            </div>
-            <div class="col-md-8">
-              <ul>
-                <h5 class="card-title mb-3">Éclair : Pagi Terakhir di Rusia</h5>
-                <p class="card-text">Genre : Romance</p>
-                <p>Penulis : Prisca Primasari</p>
-                <p>Tahun : 2011</p>
-              </ul>
-            </div>
-            <h5 class="card-title mt-2">SINOPSIS</h5>
-            <p>
-              Seandainya bisa, aku ingin terbang bersamamu dan burung-burung di atas sana.
-              Aku ingin terus duduk bersamamu di bawah teduhnya pohon—berbagi éclair,
-              ditemani matahari dan angin sepoi-sepoi. Aku ingin terus menggenggam jari-jemarimu,
-              berbagi rasa dan hangat tubuh—selamanya. Sayangnya, gravitasi menghalangiku.
-              Putaran bumi menambah setiap detik di hari-hari kita. Seperti lilin yang terus terbakar,
-              tanpa terasa waktu kita pun tidak tersisa banyak. Semua terasa terburu-buru.
-              Perpisahan pun terasa semakin menakutkan. Aku rebah di tanah.
-              Memejamkan mata kuat-kuat karena air mata yang menderas. “Aku masih di sini,” bisikmu, selirih angin sore.
-              Tapi aku tak percaya. Bagaimana jika saat aku membuka mata nanti, kau benar-benar tiada?
-            </p>
+          </div>
+          <div class="col-md-8">
+            <ul>
+              <h5 class="card-title mb-3">Éclair : Pagi Terakhir di Rusia</h5>
+              <p class="card-text">Genre : Romance</p>
+              <p>Penulis : Prisca Primasari</p>
+              <p>Tahun : 2011</p>
+            </ul>
+          </div>
+          <h5 class="card-title mt-2">SINOPSIS</h5>
+              <p>
+                Seandainya bisa, aku ingin terbang bersamamu dan burung-burung di atas sana. 
+                Aku ingin terus duduk bersamamu di bawah teduhnya pohon—berbagi éclair, 
+                ditemani matahari dan angin sepoi-sepoi. Aku ingin terus menggenggam jari-jemarimu, 
+                berbagi rasa dan hangat tubuh—selamanya. Sayangnya, gravitasi menghalangiku. 
+                Putaran bumi menambah setiap detik di hari-hari kita. Seperti lilin yang terus terbakar, 
+                tanpa terasa waktu kita pun tidak tersisa banyak. Semua terasa terburu-buru. 
+                Perpisahan pun terasa semakin menakutkan. Aku rebah di tanah. 
+                Memejamkan mata kuat-kuat karena air mata yang menderas. “Aku masih di sini,” bisikmu, selirih angin sore. 
+                Tapi aku tak percaya. Bagaimana jika saat aku membuka mata nanti, kau benar-benar tiada?
+              </p>
           </div>
         </div>
       </div>
       <div class="modal-footer">
-        <button onclick='$("#deskripsi").removeClass("is-active")' type="button" class="btn btn-danger"
-          data-bs-dismiss="modal">Close</button>
+        <button onclick='$("#deskripsi").removeClass("is-active")' type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
+</div>
 
-  <!-- Footer -->
-  <footer class="copyright mt-3 shadow">
-    <div class="container py-2">
-      <div class="row mt-2">
-        <div class="col-md-4">
-          Copyright © by Kelompok 2
-        </div>
-        <!-- <div class="icon col-md-4 offset-md-4 d-flex justify-content-end">
-          <ul>
-            <i data-feather="facebook"></i>
-            <i data-feather="instagram"></i>
-            <i data-feather="globe"></i>
-          </ul>
-        </div> -->
+<!-- Footer -->
+<footer class="copyright mt-3 shadow">
+  <div class="container py-2">
+    <div class="row mt-2">
+      <div class="col-md-4">
+        Copyright © by Kelompok 2
       </div>
+      <!-- <div class="icon col-md-4 offset-md-4 d-flex justify-content-end">
+        <ul>
+          <i data-feather="facebook"></i>
+          <i data-feather="instagram"></i> 
+          <i data-feather="globe"></i>
+        </ul>
+      </div> -->
     </div>
-  </footer>
-  <script>
-    feather.replace();
+  </div>
+</footer>
+<script>
+  feather.replace();
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-    integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-    crossorigin="anonymous"></script>
 </body>
-
 </html>

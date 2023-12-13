@@ -1,46 +1,41 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>E-Perpus</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    
-    <!-- Style CSS -->
-    <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
-    
-    <!-- Bulma CSS -->
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css"
-    />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Perpus</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <!-- Style CSS -->
+  <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
 
-    <!-- Style CSS -->
-    <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
+  <!-- Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
 
-    <!-- Google Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
-    
-    <!-- Feather Icon -->
-    <script src="https://unpkg.com/feather-icons"></script>
-    
-    <!-- JS -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
 
-    
+  <!-- Google Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
 
-    <!-- <style>
+  <!-- Feather Icon -->
+  <script src="https://unpkg.com/feather-icons"></script>
+
+  <!-- JS -->
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+
+
+  <!-- <style>
       * {
         font-family: "Poppins", sans-serif;
       }
@@ -75,48 +70,189 @@
         width: 45%;
       }
     </style> -->
+  <script>
+    $(document).ready(function () {
+      show_book();
+      bsCustomFileInput.init()
+    });
 
+    function show_book() {
+      $('#cards-box').empty();
+      $.ajax({
+        type: "GET",
+        url: "/show_book",
+        data: {},
+        success: function (response) {
+          console.log(response)
+          let rows_book = response["books"];
+          for (let i = 0; i < rows_book.length; i++) {
+            let judul = rows_book[i]["judul"];
+            let genre = rows_book[i]["genre"];
+            let tahun = rows_book[i]["tahun"];
+            let pengarang = rows_book[i]["pengarang"];
+            let sampul = rows_book[i]["sampul"];
+
+            let temp_html = `
+                    <div class="col">
+                        <div class="card shadow h-100">
+                            <img src="../${sampul}" class="card-buku">
+                            <div class="card-body">
+                                <h5 class="card-title mb-2">${judul}</h5>
+                                <p class="card-text">Genre : ${genre}</p>
+                                <p>Penulis : ${pengarang}</p>
+                                <p>Tahun : ${tahun}</p>
+                                <a onclick="edit(${rows_book[i]['_id']})" class="btn btn-primary col rounded-pill">Edit</a>
+                                <a onclick="hapus(${rows_book[i]['_id']})" class="btn btn-danger col rounded-pill">Hapus</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            $("#cards-box").append(temp_html);
+          }
+        },
+      });
+    }
+
+    function save() {
+      let judul = $('#judul').val();
+      let genre = $('#genre').val();
+      let tahun = $('#tahun').val();
+      let pengarang = $('#pengarang').val();
+      let stok = $('#stok').val();
+      let sampul = $("#sampul")[0].files[0];
+      let sinopsis = $('#sinopsis').val();
+
+      // Memeriksa apakah semua input telah diisi
+      if (judul && genre && tahun && pengarang && stok && sampul && sinopsis) {
+        let form_data = new FormData();
+        form_data.append("judul", judul);
+        form_data.append("genre", genre);
+        form_data.append("tahun", tahun);
+        form_data.append("pengarang", pengarang);
+        form_data.append("stok", stok);
+        form_data.append("sampul", sampul);
+        form_data.append("sinopsis", sinopsis);
+        $.ajax({
+          type: "POST",
+          url: "/save_buku",
+          data: form_data,
+          cache: false,
+          contentType: false,
+          processData: false,
+          success: function (response) {
+            console.log(response);
+            alert(response["msg"])
+            window.location.reload();
+          },
+        });
+      } else {
+        // Jika ada input yang belum diisi, berikan pesan kesalahan kepada pengguna
+        alert("Mohon lengkapi semua input sebelum menyimpan.");
+      }
+    }
+
+    // function save() {
+    //     let judul = $('#judul').val();
+    //     let genre = $('#genre').val();
+    //     let tahun = $('#tahun').val();
+    //     let pengarang = $('#pengarang').val();
+    //     let stok = $('#stok').val();
+    //     let sampul = $("#sampul").prop("files")[0];
+    //     let sinopsis = $('#sinopsis').val();
+    //     $.ajax({
+    //         type: "POST",
+    //         url: "/input_buku",
+    //         data: {
+    //           judul_give: judul,
+    //           genre_give: genre,
+    //           tahun_give: tahun,
+    //           pengarang_give: pengarang,
+    //           stok_give: stok,
+    //           sampul_give: sampul,
+    //           sinopsis_give: sinopsis
+    //          },
+    //         success: function (response) {
+    //             alert(response["msg"])
+    //             window.location.reload();
+    //         }
+    //     });
+    // }
+
+    function hapus(bookId) {
+    $.ajax({
+        type: "POST",
+        url: `/delete_book/${bookId}`,
+        success: function(response) {
+            alert(response['msg']);
+            window.location.reload();
+            show_book();
+        },
+        error: function(error) {
+            alert("Terjadi kesalahan saat menghapus buku.");
+            console.error(error);
+        }
+    });
+}
+
+    function edit() {
+      let judul = $('#judul').val();
+      let genre = $('#genre').val();
+      let tahun = $('#tahun').val();
+      let pengarang = $('#pengarang').val();
+      let stok = $('#stok').val();
+      let sampul = $("#sampul")[0].files[0];
+      let sinopsis = $('#sinopsis').val();
+
+      $('#input-buku #judul').val(judul);
+      $('#input-buku #genre').val(genre);
+      $('#input-buku #tahun').val(tahun);
+      $('#input-buku #pengarang').val(pengarang);
+      $('#input-buku #stok').val(stok);
+      $('#input-buku #sinopsis').val(sinopsis);
+    }
+  </script>
 </head>
+
 <body>
   <!-- navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
     <div class="container">
-        <a class="navbar-brand text-primary" href="#">E-Perpus</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/buku_admin">Buku</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/peminjaman_admin">Peminjaman</a>
-                </li>
-                <li class="nav-item">
-                    <a href="/login" style="border-radius: 20px;"
-                            class="btn border-dark py-2 px-3">Logout</a>
-                </li>
-            </ul>
-        </div>
+      <a class="navbar-brand text-primary" href="#">E-Perpus</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/buku_admin">Buku</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link text-dark" href="/peminjaman_admin">Peminjaman</a>
+          </li>
+          <li class="nav-item">
+            <a href="/login" style="border-radius: 20px;" class="btn border-dark py-2 px-3">Logout</a>
+          </li>
+        </ul>
+      </div>
     </div>
-</nav>
+  </nav>
 
-<!-- BUKU ADMIN  -->
-<div class="wrap">
-  <h2>TAMBAHKAN BUKU</h2>
-  <hr class="mx-auto">
-  <div class="container justify-content-center">
-    <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center">+Tambah</a>
+  <!-- BUKU ADMIN  -->
+  <div class="wrap">
+    <h2>TAMBAHKAN BUKU</h2>
+    <hr class="mx-auto">
+    <div class="container justify-content-center">
+      <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center"
+        style="width: 100%;">+Tambah</a>
+    </div>
   </div>
-</div>
 
-  
-<!-- Card -->
-<div class="mycards">
-  <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
-    <div class="col">
+
+  <!-- Card -->
+  <div class="mycards">
+    <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
+      <!-- <div class="col">
         <div class="card shadow h-100">
             <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
                 class="card-buku">
@@ -129,73 +265,73 @@
                 <a onclick="hapus()" class="btn btn-danger col rounded-pill">Hapus</a>
             </div>
         </div>
+    </div> -->
     </div>
   </div>
-</div>
 
-<!-- Tambah : Form Input  -->
-<div class="modal" id="input-buku">
-  <div
-    class="modal-background"
-    onclick='$("#input-buku").removeClass("is-active")'>
-  </div>
-  <div class="modal-content modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Input Buku</h5>
-        <button onclick='$("#input-buku").removeClass("is-active")' type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-              <input type="text" class="form-control" id="judul" placeholder="Judul Buku">
-          </div>
-          <div class="mb-3">
-              <input type="text" class="form-control" id="genre" placeholder="Genre">
-          </div>
-          <div class="mb-3">
-              <input type="number" class="form-control" id="tahun" placeholder="Tahun">
-          </div>
-          <div class="mb-3">
-              <input type="text" class="form-control" id="pengarang" placeholder="Pengarang">
-          </div>
-          <div class="mb-3">
-              <input type="number" class="form-control" id="stok" placeholder="Stok">
-          </div>
-          <div class="mb-3">
-            <label for="formFile" class="form-label">Sampul Buku</label>
-            <input class="form-control mb-3" type="file" id="sampul">
+  <!-- Tambah : Form Input  -->
+  <div class="modal" id="input-buku">
+    <div class="modal-background" onclick='$("#input-buku").removeClass("is-active")'>
+    </div>
+    <div class="modal-content modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Input Buku</h5>
+          <button onclick='$("#input-buku").removeClass("is-active")' type="button" class="btn-close"
+            data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form>
             <div class="mb-3">
-              <textarea class="form-control" id="sinopsis" rows="3" placeholder="Sinopsis"></textarea>
+              <input type="text" class="form-control" id="judul" placeholder="Judul Buku">
             </div>
-      </form>
+            <div class="mb-3">
+              <input type="text" class="form-control" id="genre" placeholder="Genre">
+            </div>
+            <div class="mb-3">
+              <input type="number" class="form-control" id="tahun" placeholder="Tahun">
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" id="pengarang" placeholder="Pengarang">
+            </div>
+            <div class="mb-3">
+              <input type="number" class="form-control" id="stok" placeholder="Stok">
+            </div>
+            <div class="mb-3">
+              <label for="formFile" class="form-label">Sampul Buku</label>
+              <input class="form-control mb-3" type="file" id="sampul">
+              <div class="mb-3">
+                <textarea class="form-control" id="sinopsis" rows="3" placeholder="Sinopsis"></textarea>
+              </div>
+              <div class="modal-footer">
+                <a onclick="save()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Simpan</a>
+              </div>
+          </form>
         </div>
       </div>
-      <div class="modal-footer">
-        <button onclick='save()' type="button" class="btn btn-primary" data-bs-dismiss="modal">Simpan</button>
-      </div>
     </div>
   </div>
 
-<!-- Footer -->
-<footer class="copyright mt-3 shadow">
-  <div class="container py-2">
-    <div class="row mt-2">
-      <div class="col-md-4">
-        Copyright © by Kelompok 2
-      </div>
-      <div class="icon col-md-4 offset-md-4 d-flex justify-content-end">
-        <ul>
-          <i data-feather="facebook"></i>
-          <i data-feather="instagram"></i> 
-          <i data-feather="globe"></i>
-        </ul>
+  <!-- Footer -->
+  <footer class="copyright mt-3 shadow">
+    <div class="container py-2">
+      <div class="row mt-2">
+        <div class="col-md-4">
+          Copyright © by Kelompok 2
+        </div>
+        <div class="icon col-md-4 offset-md-4 d-flex justify-content-end">
+          <ul>
+            <i data-feather="facebook"></i>
+            <i data-feather="instagram"></i>
+            <i data-feather="globe"></i>
+          </ul>
+        </div>
       </div>
     </div>
-  </div>
-</footer>
-<script>
-  feather.replace();
+  </footer>
+  <script>
+    feather.replace();
   </script>
 </body>
+
 </html>

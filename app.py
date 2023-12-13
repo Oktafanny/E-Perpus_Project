@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 
 from http import client
 from pymongo import MongoClient
+from bson import ObjectId
 import jwt
 import pytz
 from datetime import datetime, timedelta
@@ -24,20 +25,23 @@ load_dotenv(dotenv_path)
 SECRET_KEY = 'sparta'
 ADMIN_KEY = 'lala'
 
-MONGODB_URI = os.environ.get("MONGODB_URI")
-DB_NAME =  os.environ.get("DB_NAME")
+# MONGODB_URI = os.environ.get("MONGODB_URI")
+# DB_NAME =  os.environ.get("DB_NAME")
 
-client = MongoClient(MONGODB_URI)
-db = client[DB_NAME]
+# client = MongoClient(MONGODB_URI)
+# db = client[DB_NAME]
 
-# MONGODB_CONNECTION_STRING = 'mongodb://fannywibi0:group2fplx@ac-gpgzvf0-shard-00-00.fj4lge4.mongodb.net:27017,ac-gpgzvf0-shard-00-01.fj4lge4.mongodb.net:27017,ac-gpgzvf0-shard-00-02.fj4lge4.mongodb.net:27017/?ssl=true&replicaSet=atlas-j112oa-shard-0&authSource=admin&retryWrites=true&w=majority'
-# client = MongoClient(MONGODB_CONNECTION_STRING)
-# db = client.perpustakan
+MONGODB_CONNECTION_STRING = 'mongodb://fannywibi0:group2fplx@ac-gpgzvf0-shard-00-00.fj4lge4.mongodb.net:27017,ac-gpgzvf0-shard-00-01.fj4lge4.mongodb.net:27017,ac-gpgzvf0-shard-00-02.fj4lge4.mongodb.net:27017/?ssl=true&replicaSet=atlas-j112oa-shard-0&authSource=admin&retryWrites=true&w=majority'
+client = MongoClient(MONGODB_CONNECTION_STRING)
+db = client.perpustakan
 
 app = Flask(__name__)
 
 app.config['TEMPLATES_AUTO_RELOAD'] = True
-app.config['UPLOAD_FOLDER'] = '/static/profile_pics'
+# app.config['UPLOAD_FOLDER'] = '/static/profile_pics'
+app.config['UPLOAD_FOLDER'] = 'static'
+app.config['ALLOWED_EXTENSIONS'] = {'png', 'jpg', 'jpeg', 'gif'}
+
 
 SECRET_KEY = 'SPARTA'
 TOKEN_KEY = 'mytoken'
@@ -96,27 +100,94 @@ def peminjaman(id):
     find_book = db.book.find_one({'_id': id}, {})
     return render_template('peminjaman.html', find_book=find_book)
 
-@app.route('/proses_pinjam/<id>', methods=['POST'])
-def proses_pinjam(id):
-    nama = request.form.get('nama_give')
-    alamat = request.form.get('alamat_give')
-    no_telp = request.form.get('telp_give')
-    tgl_pinjam = request.form.get('tgl_pinjam')
-    tgl_kembali = request.form.get('tgl_kembali')
-    book_id = request.form.get('book_id')
+@app.route('/show_book', methods=['GET'])
+def show_book():
+    list_book = list(db.book.find({},{'_id':0}))
+    return jsonify({'books': list_book})
 
+@app.route('/save_buku', methods=['POST'])
+def save_buku():
+    judul = request.form.get('judul')
+    genre = request.form.get('genre')
+    tahun = int(request.form.get('tahun'))
+    pengarang = request.form.get('pengarang')
+    stok = int(request.form.get('stok'))
+
+    # file = request.files['sampul']
+    # filename = secure_filename(file.filename)
+    # extension = filename.split(".")[-1]
+    # file.save = f'book_pics/{judul}.{extension}'
+    today = datetime.now()
+    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+    file = request.files["sampul"]
+    extension = file.filename.split('.')[-1]
+    filename = f'static/book_pics/post-{mytime}.{extension}'
+    file.save(filename)
+    
+    # file = request.files['sampul']
+    # filename = secure_filename(file.filename)
+    # extension = filename.split(".")[-1]
+    # file_path = f"book_pics/{judul}.{extension}"
+    # file.save("./static/" + file_path)
+
+    sinopsis = request.form.get('sinopsis')
     doc = {
-        'nama': nama,
-        'alamat': alamat,
-        'no_telp': no_telp,
-        'tgl_pinjam': tgl_pinjam,
-        'tgl_kembali':tgl_kembali,
-        'id_buku':book_id,
-        'status':0
+        'judul': judul,
+        'genre': genre,
+        'tahun': tahun,
+        'pengarang': pengarang,
+        'stok': stok,
+        'sampul': filename,
+        'sinopsis': sinopsis
+
     }
-    db.peminjaman.insert_one(doc)
-  
-    return jsonify({"msg": 'Peminjaman Berhasil di tambahkan, Silahkan beralih ke halaman Riwayat untuk mengecek status Peminjaman'})
+    db.book.insert_one(doc)
+    return jsonify({'msg': 'Data buku berhasil disimpan'})
+
+@app.route('/delete_book/<bookId>', methods=['POST'])
+def delete_book(bookId):
+    db.book.delete_one({'_id': ObjectId(bookId)})
+    return jsonify({'msg': f'Buku dengan ID {bookId} berhasil dihapus.'})
+
+@app.route('/edit_buku', methods=['POST'])
+def edit_buku(bookId):
+    judul = request.form.get('judul')
+    genre = request.form.get('genre')
+    tahun = int(request.form.get('tahun'))
+    pengarang = request.form.get('pengarang')
+    stok = int(request.form.get('stok'))
+
+    # file = request.files['sampul']
+    # filename = secure_filename(file.filename)
+    # extension = filename.split(".")[-1]
+    # file.save = f'book_pics/{judul}.{extension}'
+    today = datetime.now()
+    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+    file = request.files["sampul"]
+    extension = file.filename.split('.')[-1]
+    filename = f'static/book_pics/post-{mytime}.{extension}'
+    file.save(filename)
+    
+    # file = request.files['sampul']
+    # filename = secure_filename(file.filename)
+    # extension = filename.split(".")[-1]
+    # file_path = f"book_pics/{judul}.{extension}"
+    # file.save("./static/" + file_path)
+
+    sinopsis = request.form.get('sinopsis')
+
+    db.book.update_one(
+        {'_id': ObjectId(bookId)},
+        {'judul': judul,
+        'genre': genre,
+        'tahun': tahun,
+        'pengarang': pengarang,
+        'stok': stok,
+        'sampul': filename,
+        'sinopsis': sinopsis})
+    return jsonify({'msg': 'Data buku berhasil diubah'})
 
 # @app.route('/hal_riwayat')
 # def riwayat_html():
@@ -165,25 +236,35 @@ def info(book_id):
 def buku_admin():
     return render_template('buku_admin.html')
 
+@app.route('/proses_pinjam/<id>', methods=['POST'])
+def proses_pinjam(id):
+    nama = request.form.get('nama_give')
+    alamat = request.form.get('alamat_give')
+    no_telp = request.form.get('telp_give')
+    tgl_pinjam = request.form.get('tgl_pinjam')
+    tgl_kembali = request.form.get('tgl_kembali')
+    book_id = request.form.get('book_id')
+
+    doc = {
+        'nama': nama,
+        'alamat': alamat,
+        'no_telp': no_telp,
+        'tgl_pinjam': tgl_pinjam,
+        'tgl_kembali':tgl_kembali,
+        'id_buku':book_id,
+        'status':0
+    }
+    db.peminjaman.insert_one(doc)
+  
+    return jsonify({"msg": 'Data buku berhasil disimpan'})
+
 @app.route('/peminjaman_admin', methods=['GET'])
 def peminjaman_admin():
     return render_template('peminjaman_admin.html')
 
-@app.route("/profil/<username>")
-def user(username):
-    token_receive = request.cookies.get("mytoken")
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        status = username == payload["id"]  
-        user_info = db.user.find_one({'username': payload['id']})
-        user_data = db.user.find_one({"username": username}, {"_id": False})
-        return render_template("profil.html", user_info=user_info, user_data=user_data,status=status)
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
-
 @app.route("/update_profile", methods=["POST"])
 def save_img():
-    token_receive = request.cookies.get("mytoken")
+    token_receive = request.cookies.get(TOKEN_KEY)
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
         username = payload["id"]
