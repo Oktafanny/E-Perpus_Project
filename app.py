@@ -97,9 +97,23 @@ def login():
 
 @app.route('/peminjaman/<id>', methods=['GET'])
 def peminjaman(id):
-    find_book = db.book.find_one({'_id': id}, {})
-    return render_template('peminjaman.html', find_book=find_book)
-
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        find_book = db.book.find_one({'id': id}, {'_id':0})
+        return render_template('peminjaman.html', find_book=find_book, user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+    
 @app.route('/show_book', methods=['GET'])
 def show_book():
     list_book = list(db.book.find({},{'_id':0}))
@@ -131,9 +145,11 @@ def save_buku():
     # extension = filename.split(".")[-1]
     # file_path = f"book_pics/{judul}.{extension}"
     # file.save("./static/" + file_path)
+    time = today.strftime('%Y%m%d%H%M%S')
 
     sinopsis = request.form.get('sinopsis')
     doc = {
+        'id':time,
         'judul': judul,
         'genre': genre,
         'tahun': tahun,
@@ -246,7 +262,10 @@ def proses_pinjam(id):
     tgl_kembali = request.form.get('tgl_kembali')
     book_id = request.form.get('book_id')
 
+    today = datetime.now()
+    time = today.strftime('%Y%m%d%H%M%S')
     doc = {
+        'id':time,
         'nama': nama,
         'alamat': alamat,
         'no_telp': no_telp,
@@ -432,9 +451,9 @@ def buku():
     # return render_template('buku.html', books=book_list)
     # return jsonify({'books': book_list})
 
-@app.route('/deskripsi/<int:book_id>', methods=['GET'])
-def deskripsi(book_id):
-    find_book = db.book.find_one({'_id': book_id}, {})
+@app.route('/deskripsi/<int:id>', methods=['GET'])
+def deskripsi(bookId):
+    find_book = db.book.find_one({'id': bookId}, {'_id': 0})
     return jsonify({'book': find_book})
 
 # @app.route('/peminjaman', methods=['GET'])

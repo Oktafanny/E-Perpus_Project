@@ -35,20 +35,20 @@
             $('#cards-box').empty();
             $.ajax({
                 type: "GET",
-                url: "/buku",
+                url: "/show_book",
                 data: {},
                 success: function (response) {
                     let rows = response['books'];
                     for (let i = 0; i < rows.length; i++) {
-                        let id = rows[i]['_id'];
-                        let image = rows[i]['image'];
-                        let title = rows[i]['title'];
+                        let id = rows[i]['id'];
+                        let image = rows[i]['sampul'];
+                        let title = rows[i]['judul'];
                         let genre = rows[i]['genre'];
-                        let penulis = rows[i]['penulis'];
+                        let penulis = rows[i]['pengarang'];
                         let tahun = rows[i]['tahun'];
                         let temp_html = `<div class="col">
                             <div class="card shadow h-100">
-                                <img src="/static/nama_folder/${image}"
+                                <img src="../${image}"
                                     class="card-img-top">
                                 <div class="card-body">
                                     <h5 class="card-title mb-2">${title}</h5>
@@ -70,18 +70,18 @@
         function showDescription(bookId) {
             $.ajax({
                 type: "GET",
-                url: `/deskripsi/${bookId}`,
+                url: `/deskripsi/${id}`,
                 data: {},
                 success: function (response) {
                     let book = response['book'];
                     // Update modal deskripsi dengan informasi dari response
-                    $('#deskripsi .card-img-top').attr('src', '/static/images/' + book['image']);
-                    $('#deskripsi .card-title').text(book['title']);
+                    $('#deskripsi .card-img-top').attr('src', book['sampul']);
+                    $('#deskripsi .card-title').text(book['judul']);
                     $('#deskripsi .card-text-genre').text(`Genre: ${book['genre']}`);
                     $('#deskripsi .card-text-tahun').text(`Tahun: ${book['tahun']}`);
-                    $('#deskripsi .card-text-penulis').text(`Penulis: ${book['penulis']}`);
+                    $('#deskripsi .card-text-penulis').text(`Penulis: ${book['pengarang']}`);
                     $('#deskripsi .card-text-sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
-                    $('#deskripsi .card-text-stock').text(`Stock: ${book['stock']}`);
+                    $('#deskripsi .card-text-stock').text(`Stok: ${book['stok']}`);
 
                     // Tampilkan modal deskripsi
                     $('#deskripsi').addClass('is-active');
@@ -199,7 +199,7 @@
                                             <div class="row row-cols-1 row-cols-md-2 g-4" id="cards-box">
                                                 <div class="col-md-4">
                                                     <div class="card shadow h-100">
-                                                        <img src=".../static/papan.jpg" class="card-img-top"
+                                                        <img src="" class="card-img-top"
                                                             style="height: 100%;">
                                                     </div>
                                                 </div>
