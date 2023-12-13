@@ -9,7 +9,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <!-- Style CSS -->
-    <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
+    <!-- <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet"> -->
+    <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
     <!-- Bulma CSS -->
     <link
       rel="stylesheet"
@@ -32,9 +33,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     
-    <!-- Style CSS -->
-    <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
-
     <script>
       $(document).ready(function () {
       show_book();
@@ -43,14 +41,14 @@
 
       function search() {
         let search = $('#input-name').val().toLowerCase().trim();
-        $('#cards-box .card').each(function() {
-            let cardTitle = $(this).find('.card-title').text().toLowerCase();
-            if (cardTitle.includes(search)) {
-                $(this).show();
-            } else {
-                $(this).hide();
-            }
-        });
+          $('#cards-box').children('.col').each(function() {
+              let cardTitle = $(this).find('.card-title').text().toLowerCase();
+              if (cardTitle.includes(search)) {
+                  $(this).show();
+              } else {
+                  $(this).hide();
+              }
+          });
       }
 
     function show_book() {
@@ -68,6 +66,7 @@
             let tahun = rows_book[i]["tahun"];
             let pengarang = rows_book[i]["pengarang"];
             let sampul = rows_book[i]["sampul"];
+            let id = rows_book[i]["id"];
 
             let temp_html = `
                     <div class="col">
@@ -78,8 +77,8 @@
                                 <p class="card-text">Genre : ${genre}</p>
                                 <p>Penulis : ${pengarang}</p>
                                 <p>Tahun : ${tahun}</p>
-                                <a href="/peminjaman{{id}}" class="btn btn-primary col rounded-pill">Pinjam</a>
-                                <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
+                                <a href="/peminjaman/${id}" class="btn btn-primary col rounded-pill">Pinjam</a>
+                                <a onclick="showDescription(${id})" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
                             </div>
                         </div>
                     </div>
@@ -104,25 +103,25 @@
       //   });
       // }
 
-      function showDescription(bookId) {
-            $.ajax({
-                type: "GET",
-                url: `/deskripsi/${bookId}`,
-                data: {},
-                success: function (response) {
-                    let book = response['book'];
-                    $('#deskripsi .card-img-top').attr('src', '/static/images/' + book['image']);
-                    $('#deskripsi .card-judul').text(book['title']);
-                    $('#deskripsi .card-genre').text(`Genre: ${book['genre']}`);
-                    $('#deskripsi .card-tahun').text(`Tahun: ${book['tahun']}`);
-                    $('#deskripsi .card-penulis').text(`Penulis: ${book['penulis']}`);
-                    $('#deskripsi .card-sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
-                    $('#deskripsi .card-stok').text(`Stock: ${book['stock']}`);
+      function showDescription(id) {
+          $.ajax({
+              type: "GET",
+              url: `/deskripsi/${id}`,
+              data: {},
+              success: function (response) {
+                  let book = response['book'];
+                  $('#deskripsi .card-img-top').attr('src', book['sampul']);
+                  $('#deskripsi .card-judul').text(book['judul']);
+                  $('#deskripsi .card-genre').text(`Genre: ${book['genre']}`);
+                  $('#deskripsi .card-tahun').text(`Tahun: ${book['tahun']}`);
+                  $('#deskripsi .card-penulis').text(`Penulis: ${book['pengarang']}`);
+                  $('#deskripsi .card-sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
+                  $('#deskripsi .card-stok').text(`Stock: ${book['stok']}`);
 
-                    // Tampilkan modal deskripsi
-                    $('#deskripsi').addClass('is-active');
-                }
-            });
+                  // Tampilkan modal deskripsi
+                  $('#deskripsi').addClass('is-active');
+              }
+          });
         }
 
       function logout() {
@@ -260,21 +259,29 @@
       <div class="modal-body">
         <div class="row justify-content-between mt-2">
           <div class="col-md-4">
-            <img src="{{sampul}}"
+            <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
                 class="card-img-top">
           </div>
           <div class="col-md-8">
             <ul>
-              <h5 class="card-judul mb-3">Éclair : {{ judul }}</h5>
-              <p class="card-genre">Genre : {{ genre }}</p>
-              <p class="card-penulis">Penulis : {{ pengarang }}</p>
-              <p class="card-tahun">Tahun : {{ tahun }}</p>
-              <p class="card-stok">Stok : {{ stok }}</p>
+              <h5 class="card-judul mb-3">Éclair : Pagi Terakhir di Rusia</h5>
+              <p class="card-genre">Genre : Romance</p>
+              <p class="card-penulis">Penulis : Prisca Primasari</p>
+              <p class="card-tahun">Tahun : 2011</p>
+              <p class="card-stok">Stok : 3</p>
             </ul>
           </div>
           <h5 class="card-title mt-2">SINOPSIS</h5>
               <p class="card-sinopsis">
-                {{ sinopsis }}
+                Seandainya bisa, aku ingin terbang bersamamu dan burung-burung di atas sana. 
+                Aku ingin terus duduk bersamamu di bawah teduhnya pohon—berbagi éclair, 
+                ditemani matahari dan angin sepoi-sepoi. Aku ingin terus menggenggam jari-jemarimu, 
+                berbagi rasa dan hangat tubuh—selamanya. Sayangnya, gravitasi menghalangiku. 
+                Putaran bumi menambah setiap detik di hari-hari kita. Seperti lilin yang terus terbakar, 
+                tanpa terasa waktu kita pun tidak tersisa banyak. Semua terasa terburu-buru. 
+                Perpisahan pun terasa semakin menakutkan. Aku rebah di tanah. 
+                Memejamkan mata kuat-kuat karena air mata yang menderas. “Aku masih di sini,” bisikmu, selirih angin sore. 
+                Tapi aku tak percaya. Bagaimana jika saat aku membuka mata nanti, kau benar-benar tiada?
               </p>
           </div>
         </div>

@@ -452,9 +452,9 @@ def buku():
     # return render_template('buku.html', books=book_list)
     # return jsonify({'books': book_list})
 
-@app.route('/deskripsi/<int:id>', methods=['GET'])
-def deskripsi(bookId):
-    find_book = db.book.find_one({'id': bookId}, {'_id': 0})
+@app.route('/deskripsi/<id>', methods=['GET'])
+def deskripsi(id):
+    find_book = db.book.find_one({'id': id}, {'_id': 0})
     return jsonify({'book': find_book})
 
 # @app.route('/peminjaman', methods=['GET'])

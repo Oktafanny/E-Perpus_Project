@@ -24,6 +24,11 @@
     max-width: 1200px;
   }
 
+  .card-buku {
+    width: 280px;
+    height: 380px;
+  }
+
   .card-body > p {
     margin-bottom: 5px;
     font-size: 12px;
@@ -32,3 +37,4 @@
   .card-body > a {
     width: 45%;
   }
+

@@ -73,7 +73,7 @@
   <script>
     $(document).ready(function () {
       show_book();
-      // bsCustomFileInput.init()
+      bsCustomFileInput.init()
     });
 
     function show_book() {
@@ -104,7 +104,7 @@
                                 <p>Penulis : ${pengarang}</p>
                                 <p>Tahun : ${tahun}</p>
                                 <a onclick="edit(${id})" class="btn btn-primary col rounded-pill">Edit</a>
-                                <a onclick="hapus('${rows_book[i]['_id']}')" class="btn btn-danger col rounded-pill">Hapus</a>
+                                <a onclick="hapus(${id})" class="btn btn-danger col rounded-pill">Hapus</a>
                             </div>
                         </div>
                     </div>
