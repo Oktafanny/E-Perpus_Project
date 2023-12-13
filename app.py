@@ -115,8 +115,9 @@ def save_buku():
 
     # file = request.files['sampul']
     # filename = secure_filename(file.filename)
-    # extension = filename.split(".")[-1]
-    # file.save = f'book_pics/{judul}.{extension}'
+    # extension = file.filename.split(".")[-1]
+    # file.save = f'static/book_pics/{judul}.{extension}'
+
     today = datetime.now()
     mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
@@ -150,7 +151,7 @@ def delete_book(bookId):
     db.book.delete_one({'_id': ObjectId(bookId)})
     return jsonify({'msg': f'Buku dengan ID {bookId} berhasil dihapus.'})
 
-@app.route('/edit_buku', methods=['POST'])
+@app.route('/edit_buku/<bookId>', methods=['POST'])
 def edit_buku(bookId):
     judul = request.form.get('judul')
     genre = request.form.get('genre')
@@ -177,7 +178,7 @@ def edit_buku(bookId):
     # file.save("./static/" + file_path)
 
     sinopsis = request.form.get('sinopsis')
-
+    db.book.find_one({'_id': ObjectId(bookId)})
     db.book.update_one(
         {'_id': ObjectId(bookId)},
         {'judul': judul,

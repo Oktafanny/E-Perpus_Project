@@ -101,8 +101,8 @@
                                 <p class="card-text">Genre : ${genre}</p>
                                 <p>Penulis : ${pengarang}</p>
                                 <p>Tahun : ${tahun}</p>
-                                <a onclick="edit(${rows_book[i]['_id']})" class="btn btn-primary col rounded-pill">Edit</a>
-                                <a onclick="hapus(${rows_book[i]['_id']})" class="btn btn-danger col rounded-pill">Hapus</a>
+                                <a onclick="edit('${rows_book[i]['_id']}')" class="btn btn-primary col rounded-pill">Edit</a>
+                                <a onclick="hapus('${rows_book[i]['_id']}')" class="btn btn-danger col rounded-pill">Hapus</a>
                             </div>
                         </div>
                     </div>
@@ -183,9 +183,10 @@
         type: "POST",
         url: `/delete_book/${bookId}`,
         success: function(response) {
-            alert(response['msg']);
-            window.location.reload();
-            show_book();
+          console.log(response);
+          alert(response['msg']);
+          window.location.reload();
+          // show_book();
         },
         error: function(error) {
             alert("Terjadi kesalahan saat menghapus buku.");
@@ -194,22 +195,38 @@
     });
 }
 
-    function edit() {
-      let judul = $('#judul').val();
-      let genre = $('#genre').val();
-      let tahun = $('#tahun').val();
-      let pengarang = $('#pengarang').val();
-      let stok = $('#stok').val();
-      let sampul = $("#sampul")[0].files[0];
-      let sinopsis = $('#sinopsis').val();
+function edit(bookId) {
+      // let judul = $('#judul').val();
+      // let genre = $('#genre').val();
+      // let tahun = $('#tahun').val();
+      // let pengarang = $('#pengarang').val();
+      // let stok = $('#stok').val();
+      // let sampul = $("#sampul")[0].files[0];
+      // let sinopsis = $('#sinopsis').val();
+      $.ajax({
+                type: "POST",
+                url: `/edit_buku/${bookId}`,
+                data: {},
+                success: function (response) {
+                  let book = response.book;
+                  $('#input-buku').addClass('is-active');
 
-      $('#input-buku #judul').val(judul);
-      $('#input-buku #genre').val(genre);
-      $('#input-buku #tahun').val(tahun);
-      $('#input-buku #pengarang').val(pengarang);
-      $('#input-buku #stok').val(stok);
-      $('#input-buku #sinopsis').val(sinopsis);
-    }
+                  $('#input-buku #judul').val(book.judul);
+                  $('#input-buku #genre').val(book.genre);
+                  $('#input-buku #tahun').val(book.tahun);
+                  $('#input-buku #pengarang').val(book.pengarang);
+                  $('#input-buku #stok').val(book.stok);
+                  $('#input-buku #sampul').val(book.sampul);
+                  $('#input-buku #sinopsis').val(book.sinopsis);
+
+                  $('#save-button').attr('data-id', id);
+                },
+                error: function(error) {
+                  alert("Terjadi kesalahan saat mengambil data buku.");
+                  console.error(error);
+                }
+            });    
+      }
   </script>
 </head>
 
@@ -304,7 +321,7 @@
                 <textarea class="form-control" id="sinopsis" rows="3" placeholder="Sinopsis"></textarea>
               </div>
               <div class="modal-footer">
-                <a onclick="save()" type="button" class="btn btn-primary" data-bs-dismiss="modal">Simpan</a>
+                <a onclick="save()" type="button" class="btn btn-primary" data-bs-dismiss="modal" id="save-button">Simpan</a>
               </div>
           </form>
         </div>
