@@ -142,7 +142,7 @@
                             <div class="card-body">
                                 <h5 class="card-title mb-2">{{find_book.judul}}</h5>
                                 <p class="card-text">Genre : {{find_book.genre}}</p>
-                                <p>Penulis : {{find_book.penulis}}</p>
+                                <p>Penulis : {{find_book.pengarang}}</p>
                                 <p>Tahun : {{find_book.tahun}}</p>
                                 <p>Sinopsis : {{find_book.sinopsis}}</p>
                             </div>
@@ -179,7 +179,7 @@
                                 <label for="catatan">Catatan</label>
                             </div>
                             <hr class="mx-auto">
-                            <button type="button" onclick="pinjam('{{find_book._id}}')" class="btn btn-primary">Proses</button>
+                            <button type="button" onclick="pinjam('{{find_book.id}}')" class="btn btn-primary">Proses</button>
                         </form>
                     </div>
                 </div>

@@ -30,98 +30,98 @@
         $(document).ready(function () {
             show_daftar();
         });
-        function show_daftar() {
-            $('#cards-box').empty();
-            $.ajax({
-                type: "GET",
-                url: "/daftar_peminjaman",
-                data: {},
-                success: function (response) {
-                    let rows_book = response['books'];
-                    let rows_peminjaman = response['peminjaman'];
-                    for (let i = 0; i < rows_peminjaman.length; i++) {
-                        for (let j = 0; j < rows_book.length; j++) {
-                            if (rows_peminjaman[i]['book_id'] === rows_book[j]['_id']) {
-                                let id = rows_peminjaman[i]['_id'];
-                                let title = rows_book[j]['title'];
-                                let nama = rows_peminjaman[i]['nama'];
-                                let tgl_pinjam = rows_peminjaman[i]['tgl_pinjam'];
-                                let status = rows_peminjaman[i]['status'];
-                                let temp_html = '';
-                                if (status === 0) {
-                                    temp_html = `<div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
-                        data-bs-target="">
-                        <div class="row g-0">
-                            <div class="col-8 col-md-9 col-lg-10">
-                                <div class="card-body">
-                                    <h5 class="card-title">${nama}</h5>
-                                    <p class="card-text fw-bold">${title}</p>
-                                    <p class="card-text fw-bold"> Tanggal Pinjam : <small
-                                            class="text-muted">${tgl_pinjam}</small>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
-                                <div class="card-body">
-                                    <button type="button" class="btn btn-outline-warning btnriwayat shadow-sm"
-                                        onclick="showInfo('${id}')">Details</button>
-                                </div>
-                                </div>
-                                </div>
-                                </div>`;
-                                } else {
-                                    temp_html = `<div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
-                        data-bs-target="">
-                        <div class="row g-0">
-                            <div class="col-8 col-md-9 col-lg-10">
-                                <div class="card-body">
-                                    <h5 class="card-title">${nama}</h5>
-                                    <p class="card-text fw-bold">${title}</p>
-                                    <p class="card-text fw-bold"> Tanggal Pinjam : <small
-                                            class="text-muted">${tgl_pinjam}</small>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
-                                <div class="card-body">
-                                    <button type="button" class="btn btn-outline-success btnriwayat shadow-sm"
-                                        onclick="showInfo('${id}')">Success</button>
-                                </div>
-                                </div>
-                                </div>
-                                </div>`;
-                                }
+        // function show_daftar() {
+        //     $('#cards-box').empty();
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "/daftar_peminjaman",
+        //         data: {},
+        //         success: function (response) {
+        //             let rows_book = response['books'];
+        //             let rows_peminjaman = response['peminjaman'];
+        //             for (let i = 0; i < rows_peminjaman.length; i++) {
+        //                 for (let j = 0; j < rows_book.length; j++) {
+        //                     if (rows_peminjaman[i]['book_id'] === rows_book[j]['_id']) {
+        //                         let id = rows_peminjaman[i]['_id'];
+        //                         let title = rows_book[j]['title'];
+        //                         let nama = rows_peminjaman[i]['nama'];
+        //                         let tgl_pinjam = rows_peminjaman[i]['tgl_pinjam'];
+        //                         let status = rows_peminjaman[i]['status'];
+        //                         let temp_html = '';
+        //                         if (status === 0) {
+        //                             temp_html = `<div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
+        //                 data-bs-target="">
+        //                 <div class="row g-0">
+        //                     <div class="col-8 col-md-9 col-lg-10">
+        //                         <div class="card-body">
+        //                             <h5 class="card-title">${nama}</h5>
+        //                             <p class="card-text fw-bold">${title}</p>
+        //                             <p class="card-text fw-bold"> Tanggal Pinjam : <small
+        //                                     class="text-muted">${tgl_pinjam}</small>
+        //                             </p>
+        //                         </div>
+        //                     </div>
+        //                     <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
+        //                         <div class="card-body">
+        //                             <button type="button" class="btn btn-outline-warning btnriwayat shadow-sm"
+        //                                 onclick="showInfo('${id}')">Details</button>
+        //                         </div>
+        //                         </div>
+        //                         </div>
+        //                         </div>`;
+        //                         } else {
+        //                             temp_html = `<div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
+        //                 data-bs-target="">
+        //                 <div class="row g-0">
+        //                     <div class="col-8 col-md-9 col-lg-10">
+        //                         <div class="card-body">
+        //                             <h5 class="card-title">${nama}</h5>
+        //                             <p class="card-text fw-bold">${title}</p>
+        //                             <p class="card-text fw-bold"> Tanggal Pinjam : <small
+        //                                     class="text-muted">${tgl_pinjam}</small>
+        //                             </p>
+        //                         </div>
+        //                     </div>
+        //                     <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
+        //                         <div class="card-body">
+        //                             <button type="button" class="btn btn-outline-success btnriwayat shadow-sm"
+        //                                 onclick="showInfo('${id}')">Success</button>
+        //                         </div>
+        //                         </div>
+        //                         </div>
+        //                         </div>`;
+        //                         }
 
-                                $('#cards-box').append(temp_html);
-                            }
-                        }
-                    }
-                }
-            });
-        }
+        //                         $('#cards-box').append(temp_html);
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
 
         function showInfo(bookId) {
             $.ajax({
                 type: "GET",
-                url: `/info/${bookId}`,
-                data: {},
+                url: `/info`,
+                data: { bookId: bookId },
                 success: function (response) {
                     let book = response['book'];
                     let peminjaman = response['peminjaman'];
 
                     // Update modal deskripsi dengan informasi dari response
-                    $('#deskripsi .card-img-top').attr('src', '/static/images/' + book['image']);
-                    $('#deskripsi .card-title').text(book['title']);
+                    $('#deskripsi .card-img-top').attr('src', '../' + book['sampul']);
+                    $('#deskripsi .card-title').text(book['judul']);
                     $('#deskripsi .card-text-genre').text(`Genre: ${book['genre']}`);
                     $('#deskripsi .card-text-tahun').text(`Tahun: ${book['tahun']}`);
-                    $('#deskripsi .card-text-penulis').text(`Penulis: ${book['penulis']}`);
-                    $('#deskripsi .card-text-nama').val(`Nama: ${peminjaman['nama']}`);
-                    $('#deskripsi .card-text-alamat').val(`Alamat: ${peminjaman['alamat']}`);
-                    $('#deskripsi .card-text-telp').val(`No. Telepon: ${peminjaman['telp']}`);
-                    $('#deskripsi .card-text-tgl-pinjam').val(`Tanggal Pinjam: ${peminjaman['tgl_pinjam']}`);
-                    $('#deskripsi .card-text-tgl-kembali').val(`Tanggal Kembali: ${peminjaman['tgl_kembali']}`);
-                    $('#deskripsi .card-text-catatan').val(`Catatan: ${peminjaman['catatan']}`);
-
+                    $('#deskripsi .card-text-penulis').text(`Penulis: ${book['pengarang']}`);
+                    $('#deskripsi .nama').val(`${peminjaman['nama']}`);
+                    $('#deskripsi .alamat').val(`${peminjaman['alamat']}`);
+                    $('#deskripsi .telp').val(`${peminjaman['no_telp']}`);
+                    $('#deskripsi .tgl-pinjam').val(`${peminjaman['tgl_pinjam']}`);
+                    $('#deskripsi .tgl-kembali').val(`${peminjaman['tgl_kembali']}`);
+                    $('#deskripsi .catatan').val(`${peminjaman['catatan']}`);
+                    
                     // Ganti kondisi untuk menetapkan status
                     if (peminjaman['status'] === 1) {
                         $('#acceptButton').addClass('is-hidden');
@@ -129,6 +129,7 @@
                         $('#acceptButton').removeClass('is-hidden');
                     }
 
+                    $('#deskripsi .btn-outline-success').attr('onclick', `accept('${peminjaman['id']}')`);
                     // Tampilkan modal deskripsi
                     $('#deskripsi').addClass('is-active');
                 }
@@ -138,7 +139,7 @@
         function accept(bookId) {
             $.ajax({
                 type: "POST",
-                url: "/accept/${bookId}",
+                url: `/accept/${bookId}`,
                 data: { id_give: bookId },
                 success: function (response) {
                     alert(response["msg"])
@@ -195,23 +196,36 @@
                 <hr class="mx-auto">
             </div>
             <div class="wrapper-riwayat" id="cards-box">
-                <!-- <div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
+            {% for peminjaman in peminjaman %}
+                <div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
                     data-bs-target="">
                     <div class="row g-0">
                         <div class="col-8 col-md-9 col-lg-10">
                             <div class="card-body">
-                                <h5 class="card-title">Amelia</h5>
-                                <p class="card-text fw-bold">Éclair : Pagi Terakhir di Rusia</p>
+                                <h5 class="card-title">{{peminjaman.nama}}</h5>
+                                <p class="card-text fw-bold">{{ books.judul }}</p>
                                 <p class="card-text fw-bold"> Tanggal Pinjam : <small
-                                        class="text-muted">DD/MM/YY</small>
+                                        class="text-muted">{{ peminjaman.tgl_pinjam }}</small>
                                 </p>
                             </div>
                         </div>
                         <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
                             <div class="card-body">
-                                <button type="button" class="btn btn-outline-warning btnriwayat shadow-sm"
-                                    onclick="$('#deskripsi').addClass('is-active')">Details</button>
-                            </div> -->
+                                {% if peminjaman.status == 0 %}
+                                    <button type="button" class="btn btn-outline-warning btnriwayat shadow-sm"
+                                    onclick="showInfo('{{ peminjaman.id }}')">Details</button>
+                                {% elif peminjaman.status == 1 %}
+                                    <button type="button" class="btn btn-outline-success btnriwayat shadow-sm"
+                                    onclick="showInfo('{{ peminjaman.id }}')">Done</button>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
 
                             <div class="modal" id="deskripsi">
                                 <div class="modal-background" onclick="$('#deskripsi').removeClass('is-active')"></div>
@@ -238,19 +252,19 @@
                                                             <h4>Detail Peminjaman</h4>
                                                             <form>
                                                                 <div class="mb-3">
-                                                                    <input type="text" class="form-control" id="nama"
+                                                                    <input type="text" class="form-control nama" id="nama"
                                                                         placeholder="Nama Lengkap"
                                                                         style="border: 2px solid grey;"
                                                                         value="Nama Lengkap" disabled>
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <input type="text" class="form-control" id="alamat"
+                                                                    <input type="text" class="form-control alamat" id="alamat"
                                                                         placeholder="Alamat"
                                                                         style="border: 2px solid grey;" value="Alamat"
                                                                         disabled>
                                                                 </div>
                                                                 <div class="mb-3">
-                                                                    <input type="text" class="form-control" id="telp"
+                                                                    <input type="text" class="form-control telp" id="telp"
                                                                         placeholder="No. Telepon"
                                                                         style="border: 2px solid grey;"
                                                                         value="No. Telepon" disabled>
@@ -258,7 +272,7 @@
                                                                 <div class="mb-3">
                                                                     <label for="tgl_pinjam"
                                                                         class="form-label">Tanggal Pinjam</label>
-                                                                    <input type="date" class="form-control" id="tgl_pinjam"
+                                                                    <input type="date" class="form-control tgl-pinjam" id="tgl_pinjam"
                                                                         placeholder="Tanggal Pinjam"
                                                                         style="border: 2px solid grey;" value="Pending"
                                                                         disabled>
@@ -266,15 +280,16 @@
                                                                 <div class="mb-3">
                                                                     <label for="tgl_kembali"
                                                                         class="form-label">Tanggal Kembali</label>
-                                                                    <input type="date" class="form-control" id="tgl_kembali"
+                                                                    <input type="date" class="form-control tgl-kembali" id="tgl_kembali"
                                                                         placeholder="Tanggal Kembali"
                                                                         style="border: 2px solid grey;" value="Pending"
                                                                         disabled>
                                                                 </div>
-                                                                <div class="form-floating">
+                                                                <div class="mb-3">
                                                                     <label for="catatan"
                                                                         class="form-label">Catatan</label>
-                                                                    <textarea class="form-control" placeholder="Catatan"
+                                                                        <br>
+                                                                    <textarea class="form-control catatan" placeholder="Catatan"
                                                                         id="catatan"
                                                                         style="height: 100px; border: 2px solid grey;"
                                                                         value="Pending" disabled></textarea>
@@ -296,9 +311,9 @@
                         <!-- </div>
                     </div>
                 </div> -->
-            </div>
+            <!-- </div>
         </div>
-    </section>
+    </section> -->
 
     <footer class="copyright mt-0">
         <div class="container py-2">
