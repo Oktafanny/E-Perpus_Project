@@ -91,7 +91,7 @@
             let tahun = rows_book[i]["tahun"];
             let pengarang = rows_book[i]["pengarang"];
             let sampul = rows_book[i]["sampul"];
-            let id = rows_book[i]["_id"];
+            let id = rows_book[i]["id"];
 
             console.log(id)
             let temp_html = `
@@ -180,10 +180,10 @@
     //     });
     // }
 
-    function hapus(bookId) {
+    function hapus(id) {
     $.ajax({
         type: "POST",
-        url: `/delete_book/${bookId}`,
+        url: `/delete_book/${id}`,
         success: function(response) {
           console.log(response);
           alert(response['msg']);
@@ -197,7 +197,7 @@
     });
 }
 
-function edit(bookId) {
+function edit(id) {
       // let judul = $('#judul').val();
       // let genre = $('#genre').val();
       // let tahun = $('#tahun').val();
@@ -207,7 +207,7 @@ function edit(bookId) {
       // let sinopsis = $('#sinopsis').val();
       $.ajax({
                 type: "POST",
-                url: `/edit_buku/${bookId}`,
+                url: `/edit_buku/${id}`,
                 data: {},
                 success: function (response) {
                   let book = response.book;

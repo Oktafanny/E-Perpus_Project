@@ -163,13 +163,13 @@ def save_buku():
     db.book.insert_one(doc)
     return jsonify({'msg': 'Data buku berhasil disimpan'})
 
-@app.route('/delete_book/<bookId>', methods=['POST'])
-def delete_book(bookId):
-    db.book.delete_one({'_id': ObjectId(bookId)})
-    return jsonify({'msg': f'Buku dengan ID {bookId} berhasil dihapus.'})
+@app.route('/delete_book/<id>', methods=['POST'])
+def delete_book(id):
+    db.book.delete_one({'id': id})
+    return jsonify({'msg': f'Buku dengan ID {id} berhasil dihapus.'})
 
-@app.route('/edit_buku/<bookId>', methods=['POST'])
-def edit_buku(bookId):
+@app.route('/edit_buku/<id>', methods=['POST'])
+def edit_buku(id):
     judul = request.form.get('judul')
     genre = request.form.get('genre')
     tahun = int(request.form.get('tahun'))
@@ -188,16 +188,18 @@ def edit_buku(bookId):
     filename = f'static/book_pics/post-{mytime}.{extension}'
     file.save(filename)
     
+    
     # file = request.files['sampul']
     # filename = secure_filename(file.filename)
     # extension = filename.split(".")[-1]
     # file_path = f"book_pics/{judul}.{extension}"
     # file.save("./static/" + file_path)
+    time = today.strftime('%Y%m%d%H%M%S')
 
     sinopsis = request.form.get('sinopsis')
-    db.book.find_one({'_id': ObjectId(bookId)})
+    db.book.find_one({'id': id}, {'_id': 0})
     db.book.update_one(
-        {'_id': ObjectId(bookId)},
+        {'id': time},
         {'judul': judul,
         'genre': genre,
         'tahun': tahun,
