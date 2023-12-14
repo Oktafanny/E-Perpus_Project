@@ -196,27 +196,27 @@
                 <hr class="mx-auto">
             </div>
             <div class="wrapper-riwayat" id="cards-box">
-            {% for peminjaman in peminjaman %}
+            {% for data in combined_data %}
                 <div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
                     data-bs-target="">
                     <div class="row g-0">
                         <div class="col-8 col-md-9 col-lg-10">
                             <div class="card-body">
-                                <h5 class="card-title">{{peminjaman.nama}}</h5>
-                                <p class="card-text fw-bold">{{ books.judul }}</p>
+                                <h5 class="card-title">{{ data['peminjaman']['nama'] }}</h5>
+                                <p class="card-text fw-bold">{{ data['book']['judul'] }}</p>
                                 <p class="card-text fw-bold"> Tanggal Pinjam : <small
-                                        class="text-muted">{{ peminjaman.tgl_pinjam }}</small>
+                                        class="text-muted">{{ data['peminjaman']['nama'] }}</small>
                                 </p>
                             </div>
                         </div>
                         <div class="col-4 col-md-3 col-lg-2 d-flex align-items-center">
                             <div class="card-body">
-                                {% if peminjaman.status == 0 %}
+                                {% if data['peminjaman']['status'] == 0 %}
                                     <button type="button" class="btn btn-outline-warning btnriwayat shadow-sm"
-                                    onclick="showInfo('{{ peminjaman.id }}')">Details</button>
-                                {% elif peminjaman.status == 1 %}
+                                    onclick="showInfo(`{{ data['peminjaman']['id'] }}`)">Details</button>
+                                {% elif data['peminjaman']['status'] == 1 %}
                                     <button type="button" class="btn btn-outline-success btnriwayat shadow-sm"
-                                    onclick="showInfo('{{ peminjaman.id }}')">Done</button>
+                                    onclick="showInfo(`{{ data['peminjaman']['id'] }}`)">Done</button>
                                 {% endif %}
                             </div>
                         </div>
@@ -295,10 +295,11 @@
                                                                         value="Pending" disabled></textarea>
                                                                 </div>
                                                                 <hr class="mx-auto">
-                                                                <button type="submit" class="btn btn-outline-danger"
-                                                                    onclick="$('#deskripsi').removeClass('is-active')">CLOSE</button>
                                                                 <button type="submit" class="btn btn-outline-success" id="acceptButton"
                                                                     onclick="accept('${bookId}')">Accept</button>
+                                                                    <hr/>
+                                                                <button type="submit" class="btn btn-outline-danger"
+                                                                    onclick="$('#deskripsi').removeClass('is-active')">CLOSE</button>
                                                             </form>
                                                         </div>
                                                     </div>

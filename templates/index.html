@@ -26,7 +26,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-l2VRKbYi1aGRZ5oxk/xDeQPQq5Ffmvj8ZkKW1D5FA7kFeM4M6F7L/lUn2P5xkiM+T" crossorigin="anonymous">
-
+        <style>
+        </style>
+        
     <script>
         $(document).ready(function () {
             show_books();
@@ -52,11 +54,11 @@
                                     class="card-img-top">
                                 <div class="card-body">
                                     <h5 class="card-title mb-2">${title}</h5>
-                                    <p class="card-text">Genre : ${genre}</p>
-                                    <p>Penulis : ${penulis}</p>
-                                    <p>Tahun : ${tahun}</p>
+                                    <p class="card-text" >Genre : ${genre}</p>
+                                    <p class="card-text" >Penulis : ${penulis}</p>
+                                    <p class="card-text" >Tahun : ${tahun}</p>
                                     <a href="/peminjaman/${id}" class="btn btn-primary col" style="border-radius: 20px;">Pinjam</a>
-                                    <a onclick="showDescription('${id}')" class="btn border-primary col"
+                                    <a onclick="showDescription(${id})" class="btn border-primary col"
                                         style="border-radius: 20px;">Deskripsi</a>
                                 </div>
                             </div>
@@ -68,26 +70,28 @@
         }
 
         function showDescription(bookId) {
+            // bookId = bookId.toString();
             $.ajax({
                 type: "GET",
-                url: `/deskripsi/${id}`,
-                data: {},
+                url: "/deskripsi",
+                data: {bookId: bookId},
                 success: function (response) {
                     let book = response['book'];
                     // Update modal deskripsi dengan informasi dari response
-                    $('#deskripsi .card-img-top').attr('src', book['sampul']);
+                    $('#deskripsi .card-img-top').attr('src', '../' + book['sampul']);
                     $('#deskripsi .card-title').text(book['judul']);
-                    $('#deskripsi .card-text-genre').text(`Genre: ${book['genre']}`);
-                    $('#deskripsi .card-text-tahun').text(`Tahun: ${book['tahun']}`);
-                    $('#deskripsi .card-text-penulis').text(`Penulis: ${book['pengarang']}`);
-                    $('#deskripsi .card-text-sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
-                    $('#deskripsi .card-text-stock').text(`Stok: ${book['stok']}`);
+                    $('#deskripsi .card-text genre').text(`Genre: ${book['genre']}`);
+                    $('#deskripsi .tahun').text(`Tahun: ${book['tahun']}`);
+                    $('#deskripsi .penulis').text(`Penulis: ${book['pengarang']}`);
+                    $('#deskripsi .sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
+                    $('#deskripsi .stock').text(`Stok: ${book['stok']}`);
 
                     // Tampilkan modal deskripsi
                     $('#deskripsi').addClass('is-active');
                 }
             });
         }
+       
         function logout() {
         $.removeCookie('mytoken', { path: '/' });
         alert('Signed out!');
@@ -106,46 +110,6 @@
 {% else %}
     {% include 'navbar_check/navbar_viewer.html' %}
 {% endif %}
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand text-primary" href="/">E-Perpus</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/hal_buku">Buku</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/contact_us">Contact Us</a>
-                    </li>
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" style="border-radius: 20px;" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <img class="rounded-circle" style="width: 30px; height: 30px;"
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSteItzPyeDKBxyWiOA8xrPZXIlxOYv1b1VVg&usqp=CAU" />
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/profil">Pengaturan Profil</a></li>
-                            <li><a class="dropdown-item" href="/hal_riwayat">Riwayat Peminjaman</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" onclick="logout()">Sign Out</a></li>
-                        </ul>
-                    </div>
-                </ul>
-            </div>
-        </div>
-    </nav> -->
     <section class="hero-home bg-light d-flex align-items-center justify-content-center">
         <div class="px-4 py-5 my-5 text-center">
             <h1 class="display-5 text-white">
@@ -160,7 +124,7 @@
                 </p>
                 <div class="mt-5">
                     <a href="#mycards" style="border-radius: 20px;"
-                        class="btn btn-outline-light btn-lg px-4">Recommendation</a>
+                        class="btn btn-outline-light btn-lg px-4">SHOW BOOKS</a>
                 </div>
             </div>
         </div>
@@ -171,7 +135,7 @@
             <div class="mb-5">
                 <h2 class="text-center fw-bold" style="font-size: 30px;">Peminjaman Buku Perpustakaan</h2>
                 <br>
-                <h2 class="text-center fw-bold" style="font-size: 15px; color: #007bff;">REKOMENDASI</h2>
+                <h2 class="text-center fw-bold" style="font-size: 15px; color: #007bff;">SHOW BOOKS</h2>
                 <hr>
             </div>
             <!-- <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4" id="wrapper-book-home"> -->
@@ -207,10 +171,10 @@
                                                     <div class="card-body">
                                                         <h5 class="card-title mb-2">Éclair : Pagi Terakhir
                                                             di Rusia</h5>
-                                                        <p class="card-text">Genre : Romance</p>
-                                                        <p>Tahun : 2011</p>
-                                                        <p>Penulis : Prisca Primasari</p>
-                                                        <p>Sinopsis : Lorem Ipsum is simply dummy text of the
+                                                        <p class="card-text genre">Genre : Romance</p>
+                                                        <p class="tahun">Tahun : 2011</p>
+                                                        <p class="penulis">Penulis : Prisca Primasari</p>
+                                                        <p class="sinopsis">Sinopsis : Lorem Ipsum is simply dummy text of the
                                                             printing and typesetting industry. Lorem Ipsum has
                                                             been the industry's standard dummy text ever since
                                                             the 1500s, when an unknown printer took a galley of
@@ -222,7 +186,7 @@
                                                             Lorem Ipsum passages, and more recently with desktop
                                                             publishing software like Aldus PageMaker including
                                                             versions of Lorem Ipsum.</p>
-                                                        <p>Stock : 10</p>
+                                                        <p class="stock">Stock : 10</p>
                                                     </div>
                                                     <hr class="mx-auto">
                                                     <button type="submit" class="btn btn-outline-danger"

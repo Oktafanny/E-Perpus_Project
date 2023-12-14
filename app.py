@@ -213,8 +213,8 @@ def edit_buku(id):
 # def riwayat_html():
 #     return render_template('riwayat.html')
  
-@app.route('/riwayat', methods=['GET'])
-def riwayat():
+@app.route('/riwayat/<username>', methods=['GET'])
+def riwayat(username):
     token_receive = request.cookies.get("mytoken")
     try:
         payload = jwt.decode(
@@ -222,10 +222,21 @@ def riwayat():
             SECRET_KEY,
             algorithms=['HS256']
         )
-        user_info = db.user.find_one({'username': payload["id"]})
-        book_list = list(db.book.find({},{}))
-        peminjaman_list = list(db.peminjaman.find({},{}))
-        return render_template('riwayat.html', books= book_list, peminjaman=peminjaman_list, user_info=user_info)
+        status = username == payload["id"]  
+        user_info = db.user.find_one({'username': username},{'_id':False})
+
+        book_list = list(db.book.find({},{'_id':0}))
+        peminjaman_list = list(db.peminjaman.find({"username":username},{'_id':0}))
+
+        combined_data = []
+        for peminjaman in peminjaman_list:
+            book_id = peminjaman.get('id_buku')
+            book_data = next((book for book in book_list if book.get('id') == book_id), None)
+
+            if book_data:
+                combined_data.append({'peminjaman': peminjaman, 'book': book_data})
+
+        return render_template('riwayat.html', books= book_list, peminjaman=peminjaman_list, combined_data=combined_data, user_info=user_info, status=status)
     except jwt.ExpiredSignatureError:
         msg = 'Your token has expired'
         return redirect(url_for('login', msg=msg))
@@ -242,14 +253,14 @@ def daftar():
 
 @app.route("/accept/<int:bookId>", methods=["POST"])
 def accept_book(bookId):
-    # id_give = request.form['id_give']
-    db.peminjaman.update_one({'_id':int(bookId)},{'$set':{'status':1}})
+    id_give = request.form['id_give']
+    db.peminjaman.update_one({'id':id_give},{'$set':{'status':1}})
     return jsonify({'msg':'Accept!'})
 
-@app.route('/info/<int:book_id>', methods=['GET'])
-def info(book_id):
-    find_book = db.book.find_one({'_id': book_id}, {})
-    find_peminjaman = db.peminjaman.find_one({'_id': book_id}, {})
+@app.route('/info', methods=['GET'])
+def info():
+    find_book = db.book.find_one({}, {'_id':0})
+    find_peminjaman = db.peminjaman.find_one({'id': request.args.get('bookId')}, {'_id':0})
     return jsonify({'book': find_book, 'peminjaman': find_peminjaman})
 
 @app.route('/buku_admin', methods=['GET'])
@@ -259,22 +270,26 @@ def buku_admin():
 @app.route('/proses_pinjam/<id>', methods=['POST'])
 def proses_pinjam(id):
     nama = request.form.get('nama_give')
+    username = request.form.get('username')
     alamat = request.form.get('alamat_give')
     no_telp = request.form.get('telp_give')
     tgl_pinjam = request.form.get('tgl_pinjam')
     tgl_kembali = request.form.get('tgl_kembali')
     book_id = request.form.get('book_id')
+    catatan = request.form.get('catatan')
 
     today = datetime.now()
     time = today.strftime('%Y%m%d%H%M%S')
     doc = {
         'id':time,
+        'username': username,
         'nama': nama,
         'alamat': alamat,
         'no_telp': no_telp,
         'tgl_pinjam': tgl_pinjam,
         'tgl_kembali':tgl_kembali,
         'id_buku':book_id,
+        'catatan':catatan,
         'status':0
     }
     db.peminjaman.insert_one(doc)
@@ -283,7 +298,32 @@ def proses_pinjam(id):
 
 @app.route('/peminjaman_admin', methods=['GET'])
 def peminjaman_admin():
-    return render_template('peminjaman_admin.html')
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        book_list = list(db.book.find({},{}))
+        peminjaman_list = list(db.peminjaman.find({},{}))
+
+        combined_data = []
+        for peminjaman in peminjaman_list:
+            book_id = peminjaman.get('id_buku')
+            book_data = next((book for book in book_list if book.get('id') == book_id), None)
+
+            if book_data:
+                combined_data.append({'peminjaman': peminjaman, 'book': book_data})
+
+        return render_template('peminjaman_admin.html', books= book_list, peminjaman=peminjaman_list, combined_data=combined_data, user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
 
 # @app.route("/update_profile", methods=["POST"])
 # def save_img():
@@ -494,9 +534,9 @@ def buku():
     # return render_template('buku.html', books=book_list)
     # return jsonify({'books': book_list})
 
-@app.route('/deskripsi/<id>', methods=['GET'])
-def deskripsi(id):
-    find_book = db.book.find_one({'id': id}, {'_id': 0})
+@app.route('/deskripsi', methods=['GET'])
+def deskripsi():
+    find_book = db.book.find_one({'id': request.args.get('bookId')}, {'_id': 0})
     return jsonify({'book': find_book})
 
 # @app.route('/peminjaman', methods=['GET'])

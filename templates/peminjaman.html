@@ -49,7 +49,8 @@
     </style>
         <script>
             function pinjam(id) {
-                let nama = $('#nama').val();
+                let username = $('#username').val();
+                let nama_lengkap = $('#nama').val();
                 let alamat = $('#alamat').val();
                 let no_telp = $('#no_telp').val();
                 let tgl_pinjam = $('#tgl_pinjam').val();
@@ -59,7 +60,8 @@
                     type: "POST",
                     url: "/proses_pinjam/${id}",
                     data: { 
-                        nama_give: nama,
+                        username: username,
+                        nama_give: nama_lengkap,
                         alamat_give: alamat,
                         telp_give: no_telp,
                         tgl_pinjam: tgl_pinjam,
@@ -86,46 +88,6 @@
 {% else %}
     {% include 'navbar_check/navbar_viewer.html' %}
 {% endif %}
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand text-primary" href="/">E-Perpus</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/buku">Buku</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/about">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="/contact_us">Contact Us</a>
-                    </li>
-                    <div class="dropdown">
-                        <button class="btn btn-primary dropdown-toggle" style="border-radius: 20px;" type="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            <img class="rounded-circle" style="width: 30px; height: 30px;"
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSteItzPyeDKBxyWiOA8xrPZXIlxOYv1b1VVg&usqp=CAU" />
-                        </button>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="/profil">Pengaturan Profil</a></li>
-                            <li><a class="dropdown-item" href="/hal_riwayat">Riwayat Peminjaman</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="#">Sign Out</a></li>
-                        </ul>
-                    </div>
-                </ul>
-            </div>
-        </div>
-    </nav> -->
     <section class="artikel_area section_gap py-5" id="artikelsection" style="min-height:100vh">
         <div class="container">
             <div class="mb-5">
@@ -152,6 +114,8 @@
                         <h4>Data Diri Peminjam</h4>
                         <form>
                             <div class="mb-3">
+                                <input type="text" class="form-control" id="username" placeholder="Nama Lengkap"
+                                    style="border: 2px solid grey;" value="{{user_info.username}}" hidden>
                                 <input type="text" class="form-control" id="nama" placeholder="Nama Lengkap"
                                     style="border: 2px solid grey;">
                             </div>

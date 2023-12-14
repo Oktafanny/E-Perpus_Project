@@ -11,6 +11,45 @@
     font-weight: bold;
 }
 
+.col {
+    margin-bottom: 20px;
+}
+
+.card {
+    border: none;
+    border-radius: 15px;
+    overflow: hidden;
+    transition: transform 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+.card-img-top {
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 15px;
+}
+
+.card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.card-text {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.btn {
+    width: 100%;
+}
+
 .nav-item::after {
     content: '';
     display: block;
