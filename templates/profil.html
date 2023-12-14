@@ -1,105 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>E-Perpus</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-        <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz"
-        crossorigin="anonymous"></script>
-        
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+
+    <title>Profil</title>
 </head>
-
-<script>
-    function logout() {
-        $.removeCookie('mytoken', { path: '/' });
-        alert('Signed out!');
-        window.location.href = "/login";
-    }
-
-    function update_profile() {
-        let name = $("#nama").val();
-        let file = $("#foto_profil").prop("files")[0];
-        let about = $("#deskripsi_profil").val();
-        let form_data = new FormData();
-        form_data.append("file_give", file);
-        form_data.append("name_give", name);
-        form_data.append("about_give", about);
-
-        $.ajax({
-            type: "POST",
-            url: "/update_profile",
-            data: form_data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function (response) {
-                if (response["result"] === "success") {
-                    alert(response["msg"]);
-                    window.location.reload();
-                }
-            },
-        });
-    }
-
-  </script>
-
 <body>
-    {% if user_info %}
-    {% if user_info.role == 'admin' %}
-        {% include 'navbar_check/navbar_admin.html' %}
-    {% elif user_info.role == 'member' %}
-        {% include 'navbar_check/navbar_member.html' %}
-    {% endif %}
-{% else %}
-    {% include 'navbar_check/navbar_viewer.html' %}
-{% endif %}
-    <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
-    <div class="container">
-        <a class="navbar-brand text-primary" href="/">E-Perpus</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/hal_buku">Buku</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/contact_us">Contact Us</a>
-                </li>
-                <div class="dropdown">
-                    <button class="btn btn-primary dropdown-toggle" style="border-radius: 20px;" type="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
-                        <img class="rounded-circle" style="width: 30px; height: 30px;"
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSteItzPyeDKBxyWiOA8xrPZXIlxOYv1b1VVg&usqp=CAU" />
-                    </button>
-                    <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="/profil">Pengaturan Profil</a></li>
-                        <li><a class="dropdown-item" href="/hal_riwayat">Riwayat Peminjaman</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" onclick="logout()">Sign Out</a></li>
-                    </ul>
-                </div>
-            </ul>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand text-primary" href="/">E-Perpus</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="index.html">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="#">Buku</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="about_us.html">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" href="contact.html">Contact Us</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="login.html" style="border-radius: 20px;"
+                                class="btn btn-primary py-2 px-3">Masuk/Daftar</a>
+                    </li>
+                </ul>
+            </div>
         </div>
-    </div>
-</nav> -->
+    </nav>
 
 
     <div class="container my-5 px-3" style="min-height:610px">
@@ -116,7 +56,8 @@
         <div class="card mb-5 shadow mx-auto mt-3 rounded-0 px-5 py-5" style="max-width: 550px;">
             <div class="card-body">
                 <div class="col-12 d-flex justify-content-center align-items-center">
-                    <div class="profile-picture"> <img src="{{ url_for('static', filename=user_data.profile_pic_real)}}" class="rounded-circle is-96x96" alt="..."></div>
+                    <div class="profile-picture"> <img src="{{ url_for('static', filename=user_data.profile_pic_real)}}"
+                            class="rounded-circle is-96x96" alt="..."></div>
                 </div>
                 <div class="col-12 d-flex justify-content-center align-items-center mt-3">
                     <div class="profile-text d-flex flex-column text-center">
@@ -149,7 +90,7 @@
                     <div class="mb-3">
                         <label for="exampleFormControlInput1" class="form-label">Nama Lengkap</label>
                         <input type="text" class="form-control" id="nama" name="nama"
-                            placeholder="Masukkan Nama Lengkap Anda" value="{{user_data.name}}" required>
+                            placeholder="Masukkan Nama Lengkap Anda" value="" required>
                     </div>
                     <div class="mb-3"><img class="is-70x70" src="{{ url_for('static', filename=user_data.profile_pic_real)}}"></div>
                     <div class="mb-3">
@@ -179,5 +120,4 @@
         </div>
     </footer>
 </body>
-
 </html>
