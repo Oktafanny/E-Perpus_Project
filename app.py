@@ -283,33 +283,33 @@ def proses_pinjam(id):
 def peminjaman_admin():
     return render_template('peminjaman_admin.html')
 
-@app.route("/update_profile", methods=["POST"])
-def save_img():
-    token_receive = request.cookies.get(TOKEN_KEY)
-    try:
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
-        username = payload["id"]
-        name_receive = request.form["name_give"]
-        about_receive = request.form["about_give"]
-        new_doc = {
-            "name": name_receive, 
-            "profile_info": about_receive}
+# @app.route("/update_profile", methods=["POST"])
+# def save_img():
+#     token_receive = request.cookies.get(TOKEN_KEY)
+#     try:
+#         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+#         username = payload["id"]
+#         name_receive = request.form["name_give"]
+#         about_receive = request.form["about_give"]
+#         new_doc = {
+#             "name": name_receive, 
+#             "profile_info": about_receive}
         
-        if "file_give" in request.files:
-            file = request.files["file_give"]
-            filename = secure_filename(file.filename)
-            extension = filename.split(".")[-1]
-            file_path = f"profile_pics/{username}.{extension}"
-            file.save("./static/" + file_path)
-            new_doc["profile_pic"] = filename
-            new_doc["profile_pic_real"] = file_path
+#         if "file_give" in request.files:
+#             file = request.files["file_give"]
+#             filename = secure_filename(file.filename)
+#             extension = filename.split(".")[-1]
+#             file_path = f"profile_pics/{username}.{extension}"
+#             file.save("./static/" + file_path)
+#             new_doc["profile_pic"] = filename
+#             new_doc["profile_pic_real"] = file_path
 
-        db.user.update_one(
-            {"username": payload["id"]}, 
-            {"$set": new_doc})
-        return jsonify({"result": "success", "msg": "Profil Diperbarui!"})
-    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for("home"))
+#         db.user.update_one(
+#             {"username": payload["id"]}, 
+#             {"$set": new_doc})
+#         return jsonify({"result": "success", "msg": "Profil Diperbarui!"})
+#     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+#         return redirect(url_for("home"))
     
 # @app.route("/login")
 # def login():
@@ -424,7 +424,47 @@ def admin_signup():
         }
         db.user.insert_one(doc)
         return jsonify({"result": "success"})   
-      
+
+@app.route("/profil/<username>")
+def profil(username):
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        status = username == payload["id"]  
+        user_info = db.user.find_one({'username': payload['id']})
+        user_data = db.user.find_one({"username": username}, {"_id": False})
+        return render_template("profil.html", user_info=user_info, user_data=user_data,status=status)
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
+@app.route("/update_profil", methods=["POST"])
+def up_profil():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=["HS256"])
+        username = payload["id"]
+        name_receive = request.form["name_give"]
+        about_receive = request.form["about_give"]
+        new_doc = {
+            "name": name_receive, 
+            "profile_info": about_receive}
+        
+        if "file_give" in request.files:
+            file = request.files["file_give"]
+            filename = secure_filename(file.filename)
+            extension = filename.split(".")[-1]
+            file_path = f"profile_pics/{username}.{extension}"
+            file.save("./static/" + file_path)
+            new_doc["profile_pic"] = filename
+            new_doc["profile_pic_real"] = file_path
+
+        db.user.update_one(
+            {"username": payload["id"]}, 
+            {"$set": new_doc})
+        return jsonify({"result": "success", "msg": "Profil Diperbarui!"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("home"))
+
 @app.route('/hal_buku', methods=['GET'])
 def hal_buku():
     return render_template('buku.html')
@@ -465,23 +505,23 @@ def deskripsi(id):
 # def riwayat():
 #     return render_template('riwayat.html')
 
-@app.route('/profil', methods=['GET'])
-def profil():
-    token_receive = request.cookies.get("mytoken")
-    try:
-        payload = jwt.decode(
-            token_receive,
-            SECRET_KEY,
-            algorithms=['HS256']
-        )
-        user_info = db.user.find_one({'username': payload["id"]})
-        return render_template('profil.html', user_info=user_info)
-    except jwt.ExpiredSignatureError:
-        msg = 'Your token has expired'
-        return redirect(url_for('login', msg=msg))
-    except jwt.exceptions.DecodeError:
-        msg = 'There was a problem logging you in'
-        return redirect(url_for('login', msg=msg))
+# @app.route('/profil', methods=['GET'])
+# def profil():
+#     token_receive = request.cookies.get("mytoken")
+#     try:
+#         payload = jwt.decode(
+#             token_receive,
+#             SECRET_KEY,
+#             algorithms=['HS256']
+#         )
+#         user_info = db.user.find_one({'username': payload["id"]})
+#         return render_template('profil.html', user_info=user_info)
+#     except jwt.ExpiredSignatureError:
+#         msg = 'Your token has expired'
+#         return redirect(url_for('login', msg=msg))
+#     except jwt.exceptions.DecodeError:
+#         msg = 'There was a problem logging you in'
+#         return redirect(url_for('login', msg=msg))
 
 @app.route("/contact", methods=['GET', 'POST'])
 def contact():
