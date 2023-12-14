@@ -41,35 +41,15 @@
     
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
-        <div class="container">
-            <a class="navbar-brand text-primary" href="/">E-Perpus</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="index.html">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="#">Buku</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="about_us.html">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" href="contact.html">Contact Us</a>
-                    </li>
-                    <li class="nav-item">
-                        <a href="login.html" style="border-radius: 20px;"
-                                class="btn btn-primary py-2 px-3">Masuk/Daftar</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+    {% if user_info %}
+    {% if user_info.role == 'admin' %}
+        {% include 'navbar_check/navbar_admin.html' %}
+    {% elif user_info.role == 'member' %}
+        {% include 'navbar_check/navbar_member.html' %}
+    {% endif %}
+{% else %}
+    {% include 'navbar_check/navbar_viewer.html' %}
+{% endif %}
 
     <div class="container pt-5 pb-5" style="background-image: url(assets/buku.jpg);">
         
