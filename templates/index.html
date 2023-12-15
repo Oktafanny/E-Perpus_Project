@@ -26,8 +26,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-l2VRKbYi1aGRZ5oxk/xDeQPQq5Ffmvj8ZkKW1D5FA7kFeM4M6F7L/lUn2P5xkiM+T" crossorigin="anonymous">
-        <style>
-        </style>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         
     <script>
         $(document).ready(function () {
@@ -73,18 +72,18 @@
             // bookId = bookId.toString();
             $.ajax({
                 type: "GET",
-                url: "/deskripsi",
+                url: `/info`,
                 data: {bookId: bookId},
                 success: function (response) {
                     let book = response['book'];
                     // Update modal deskripsi dengan informasi dari response
                     $('#deskripsi .card-img-top').attr('src', '../' + book['sampul']);
                     $('#deskripsi .card-title').text(book['judul']);
+                    $('#deskripsi .card-text tahun').text(`Tahun: ${book['tahun']}`);
                     $('#deskripsi .card-text genre').text(`Genre: ${book['genre']}`);
-                    $('#deskripsi .tahun').text(`Tahun: ${book['tahun']}`);
-                    $('#deskripsi .penulis').text(`Penulis: ${book['pengarang']}`);
-                    $('#deskripsi .sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
-                    $('#deskripsi .stock').text(`Stok: ${book['stok']}`);
+                    $('#deskripsi .card-text penulis').text(`Penulis: ${book['pengarang']}`);
+                    $('#deskripsi .card-text sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
+                    $('#deskripsi .card-text stock').text(`Stok: ${book['stok']}`);
 
                     // Tampilkan modal deskripsi
                     $('#deskripsi').addClass('is-active');
@@ -172,9 +171,9 @@
                                                         <h5 class="card-title mb-2">Éclair : Pagi Terakhir
                                                             di Rusia</h5>
                                                         <p class="card-text genre">Genre : Romance</p>
-                                                        <p class="tahun">Tahun : 2011</p>
-                                                        <p class="penulis">Penulis : Prisca Primasari</p>
-                                                        <p class="sinopsis">Sinopsis : Lorem Ipsum is simply dummy text of the
+                                                        <p class="card-text tahun">Tahun : 2011</p>
+                                                        <p class="card-text penulis">Penulis : Prisca Primasari</p>
+                                                        <p class="card-text sinopsis">Sinopsis : Lorem Ipsum is simply dummy text of the
                                                             printing and typesetting industry. Lorem Ipsum has
                                                             been the industry's standard dummy text ever since
                                                             the 1500s, when an unknown printer took a galley of
@@ -186,7 +185,7 @@
                                                             Lorem Ipsum passages, and more recently with desktop
                                                             publishing software like Aldus PageMaker including
                                                             versions of Lorem Ipsum.</p>
-                                                        <p class="stock">Stock : 10</p>
+                                                        <p class="card-text stock">Stock : 10</p>
                                                     </div>
                                                     <hr class="mx-auto">
                                                     <button type="submit" class="btn btn-outline-danger"

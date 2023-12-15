@@ -265,8 +265,22 @@ def info():
 
 @app.route('/buku_admin', methods=['GET'])
 def buku_admin():
-    return render_template('buku_admin.html')
-
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        user_info = db.user.find_one({'username': payload["id"]})
+        return render_template('buku_admin.html', user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+    
 @app.route('/proses_pinjam/<id>', methods=['POST'])
 def proses_pinjam(id):
     nama = request.form.get('nama_give')
