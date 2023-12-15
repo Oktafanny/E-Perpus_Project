@@ -168,48 +168,95 @@ def delete_book(id):
     db.book.delete_one({'id': id})
     return jsonify({'msg': f'Buku dengan ID {id} berhasil dihapus.'})
 
+# @app.route('/edit_buku/<id>', methods=['POST'])
+# def edit_buku(id):
+#     judul = request.form.get('judul')
+#     genre = request.form.get('genre')
+#     tahun = int(request.form.get('tahun'))
+#     pengarang = request.form.get('pengarang')
+#     stok = int(request.form.get('stok'))
+
+#     # # file = request.files['sampul']
+#     # # filename = secure_filename(file.filename)
+#     # # extension = filename.split(".")[-1]
+#     # # file.save = f'book_pics/{judul}.{extension}'
+#     # today = datetime.now()
+#     # mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+
+#     # file = request.files["sampul"]
+#     # extension = file.filename.split('.')[-1]
+#     # filename = f'static/book_pics/post-{mytime}.{extension}'
+#     # file.save(filename)
+    
+    
+#     # file = request.files['sampul']
+#     # filename = secure_filename(file.filename)
+#     # extension = filename.split(".")[-1]
+#     # file_path = f"book_pics/{judul}.{extension}"
+#     # file.save("./static/" + file_path)
+#     # time = today.strftime('%Y%m%d%H%M%S')
+
+#     sinopsis = request.form.get('sinopsis')
+#     new_doc = (
+#         {'id': id},
+#         {'$set': {'judul': judul,
+#         'genre': genre,
+#         'tahun': tahun,
+#         'pengarang': pengarang,
+#         'stok': stok,
+#         # 'sampul': filename,
+#         'sinopsis': sinopsis
+#         }}
+#     )
+#     db.book.update_one(new_doc)
+#     return jsonify({'msg': 'Data buku berhasil diubah'})
+
+
+
 @app.route('/edit_buku/<id>', methods=['POST'])
 def edit_buku(id):
-    judul = request.form.get('judul')
-    genre = request.form.get('genre')
-    tahun = int(request.form.get('tahun'))
-    pengarang = request.form.get('pengarang')
-    stok = int(request.form.get('stok'))
 
-    # # file = request.files['sampul']
-    # # filename = secure_filename(file.filename)
-    # # extension = filename.split(".")[-1]
-    # # file.save = f'book_pics/{judul}.{extension}'
-    # today = datetime.now()
-    # mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+    judul_receive = request.form["judul"]
+    genre_receive = request.form["genre"]
+    tahun_receive = int(request.form.get('tahun'))
+    # tahun = int(request.form.get('tahun'))
+    pengarang_receive = request.form["pengarang"]
+    stok_receive = int(request.form.get('tahun'))
+    sinopsis_receive = request.form["sinopsis"]
 
-    # file = request.files["sampul"]
-    # extension = file.filename.split('.')[-1]
-    # filename = f'static/book_pics/post-{mytime}.{extension}'
-    # file.save(filename)
-    
-    
-    # file = request.files['sampul']
-    # filename = secure_filename(file.filename)
-    # extension = filename.split(".")[-1]
-    # file_path = f"book_pics/{judul}.{extension}"
-    # file.save("./static/" + file_path)
-    # time = today.strftime('%Y%m%d%H%M%S')
+    today = datetime.now()
+    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
-    sinopsis = request.form.get('sinopsis')
-    new_doc = (
-        {'id': id},
-        {'$set': {'judul': judul,
-        'genre': genre,
-        'tahun': tahun,
-        'pengarang': pengarang,
-        'stok': stok,
-        # 'sampul': filename,
-        'sinopsis': sinopsis
-        }}
-    )
-    db.book.update_one(new_doc)
-    return jsonify({'msg': 'Data buku berhasil diubah'})
+    file = request.files["sampul"]
+
+    if file:
+        extension = file.filename.split('.')[-1]
+        filename = f'static/book_pics/post-{mytime}.{extension}'
+        file.save(filename)
+
+        # new_doc = {
+        #     "judul": judul_receive,
+        #     "genre": genre_receive,
+        #     "tahun": tahun_receive,
+        #     "pengarang": pengarang_receive,
+        #     "stok": stok_receive,
+        #     "sampul": filename,
+        #     "sinopsis": sinopsis_receive
+        
+        # },
+        db.book.update_one({'id': id}, {'$set':{"judul": judul_receive,
+            "genre": genre_receive,
+            "tahun": tahun_receive,
+            "pengarang": pengarang_receive,
+            "stok": stok_receive,
+            "sampul": filename,
+            "sinopsis": sinopsis_receive}})
+
+        return jsonify({"result": "success", "msg": "Buku Diperbarui!"})
+    else:
+        return jsonify({"result": "error", "msg": "Tidak ada berkas sampul yang dikirim"})
+
+
 
 # @app.route('/hal_riwayat')
 # def riwayat_html():

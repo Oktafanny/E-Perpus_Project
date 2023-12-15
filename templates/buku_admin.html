@@ -65,7 +65,7 @@
                                 <p class="card-text">Genre : ${genre}</p>
                                 <p>Penulis : ${pengarang}</p>
                                 <p>Tahun : ${tahun}</p>
-                                <a onclick="edit(${id})" class="btn btn-primary col rounded-pill">Edit</a>
+                                <a onclick="form_edit(${id})" class="btn btn-primary col rounded-pill">Edit</a>
                                 <a onclick="hapus(${id})" class="btn btn-danger col rounded-pill">Hapus</a>
                             </div>
                         </div>
@@ -142,6 +142,27 @@
     //     });
     // }
 
+    function form_edit(id) {
+          $.ajax({
+              type: "GET",
+              url: `/deskripsi/${id}`,
+              data: {},
+              success: function (response) {
+                  let book = response['book'];
+                  // $('#input-buku .sampul').val('src', book['sampul']);
+                  $('#input-buku .judul').val(book['judul']);
+                  $('#input-buku .genre').val(book['genre']);
+                  $('#input-buku .tahun').val(book['tahun']);
+                  $('#input-buku .pengarang').val(book['pengarang']);
+                  $('#input-buku .sinopsis').val(book['sinopsis']);
+                  $('#input-buku .stok').val(book['stok']);
+                  $('#input-buku .btn-primary').attr('onclick', `edit('${book['id']}')`);
+                  // Tampilkan modal deskripsi
+                  $('#input-buku').addClass('is-active');
+              }
+          });
+        }
+
     function hapus(id) {
     $.ajax({
         type: "POST",
@@ -160,31 +181,37 @@
 }
 
     function edit(id) {
+      let judul = $('#judul').val();
+      let genre = $('#genre').val();
+      let tahun = $('#tahun').val();
+      let pengarang = $('#pengarang').val();
+      let stok = $('#stok').val();
+      let sampul = $("#sampul")[0].files[0];
+      let sinopsis = $('#sinopsis').val();
+      let form_data = new FormData();
+      form_data.append('judul', judul);
+      form_data.append('genre', genre);
+      form_data.append('tahun', tahun);
+      form_data.append('pengarang', pengarang);
+      form_data.append('stok', stok);
+      form_data.append('sampul', sampul);
+      form_data.append('sinopsis', sinopsis);
       $.ajax({
         type: "POST",
         url: `/edit_buku/${id}`,
-        data: {},
-        success: function (response) {
-          console.log(id);
-          let book = response.book;
-          $('#input-buku').addClass('is-active');
-
-          $('#input-buku #judul').val(book.judul);
-          $('#input-buku #genre').val(book.genre);
-          $('#input-buku #tahun').val(book.tahun);
-          $('#input-buku #pengarang').val(book.pengarang);
-          $('#input-buku #stok').val(book.stok);
-          // $('#input-buku #sampul').val(book.sampul);
-          $('#input-buku #sinopsis').val(book.sinopsis);
-
-          $('#save-button').attr('data-id', id);
-        },
-        error: function(error) {
-          alert("Terjadi kesalahan saat mengambil data buku.");
-          console.error(error);
-        }
+        data: form_data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function (response) {
+                if (response["result"] === "success") {
+                    alert(response["msg"]);
+                    window.location.reload();
+                }
+            },
     });
     }
+  
   </script>
 </head>
 
@@ -267,25 +294,25 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <input type="text" class="form-control" id="judul" placeholder="Judul Buku">
+              <input type="text" class="form-control judul" id="judul" placeholder="Judul Buku">
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control" id="genre" placeholder="Genre">
+              <input type="text" class="form-control genre" id="genre" placeholder="Genre">
             </div>
             <div class="mb-3">
-              <input type="number" class="form-control" id="tahun" placeholder="Tahun">
+              <input type="number" class="form-control tahun" id="tahun" placeholder="Tahun">
             </div>
             <div class="mb-3">
-              <input type="text" class="form-control" id="pengarang" placeholder="Pengarang">
+              <input type="text" class="form-control pengarang" id="pengarang" placeholder="Pengarang">
             </div>
             <div class="mb-3">
-              <input type="number" class="form-control" id="stok" placeholder="Stok">
+              <input type="number" class="form-control stok" id="stok" placeholder="Stok">
             </div>
             <div class="mb-3">
               <label for="formFile" class="form-label">Sampul Buku</label>
-              <input class="form-control mb-3" type="file" id="sampul">
+              <input class="form-control sampul mb-3" type="file" id="sampul">
               <div class="mb-3">
-                <textarea class="form-control" id="sinopsis" rows="3" placeholder="Sinopsis"></textarea>
+                <textarea class="form-control sinopsis" id="sinopsis" rows="3" placeholder="Sinopsis"></textarea>
               </div>
               <div class="modal-footer">
                 <a onclick="save()" type="button" class="btn btn-primary" data-bs-dismiss="modal" id="save-button">Simpan</a>
