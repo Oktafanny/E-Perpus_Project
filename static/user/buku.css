@@ -2,47 +2,72 @@
     font-family: "Poppins", sans-serif;
 }
 
+hr {
+  opacity: 1;
+  margin: 1rem 0;
+  color: inherit;
+  border: 0;
+  height: 1px;
+  width: 10%;
+  background-color: #c3e2f0;
+}
+
 .wrap{
     margin-top: 30px;
     justify-content: center;
   }
 
-  .wrap > h2{
-    text-align: center;
-    font-weight: 600;
-  }
+.wrap > h2{
+  text-align: center;
+  font-weight: 600;
+}
 
-  .search-box {
-    width: 50%;
-    margin: 50px auto;
-    max-width: 700px;
-  }
+.search-box {
+  width: 50%;
+  margin: 50px auto;
+  max-width: 700px;
+}
 
-  .mycards {
-    margin: 20px auto 0px auto;
-    width: 80%;
-    max-width: 1200px;
-  }
+.mycards {
+  margin: 20px auto 0px auto;
+  width: 80%;
+  max-width: 1200px;
+}
 
-  .card-buku {
-    width: 280px;
-    height: 380px;
-  }
+.card-buku {
+  width: 280px;
+  height: 380px;
+}
 
-  .card-body > p {
-    margin-bottom: 5px;
-    font-size: 12px;
-  }
+.card-body > h5 {
+  font-weight: 600;
+}
 
-  .card-body > a {
-    width: 45%;
-  }
+.card-body > p {
+  margin-bottom: 5px;
+  font-size: 15px;
+}
 
-.card {
-  transition: transform 0.3s ease;
+.card-body > a {
+  width: 100%;
+  margin-bottom: 10px;
 }
 
 .card:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+
+.card {
+  transition: transform 0.3s ease;
+}
+
+/* Style Pop Up */
+.horizontal-line {
+  width: 50%;
+  margin-bottom: 30px;
+}
+
+.card-sinopsis{
+  text-align: justify;
 }

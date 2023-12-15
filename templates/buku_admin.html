@@ -8,7 +8,7 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
   <!-- Style CSS -->
@@ -33,43 +33,6 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
 
-
-
-  <!-- <style>
-      * {
-        font-family: "Poppins", sans-serif;
-      }
-      
-      .wrap{
-        margin-top: 30px;
-        justify-content: center;
-      }
-
-      .wrap > h2{
-        text-align: center;
-      }
-
-      .search-box {
-        width: 50%;
-        margin: 50px auto;
-        max-width: 700px;
-      }
-
-      .mycards {
-        margin: 20px auto 0px auto;
-        width: 80%;
-        max-width: 1200px;
-      }
-
-      .card-body > p {
-        margin-bottom: 5px;
-        font-size: 12px;
-      }
-
-      .card-body > a {
-        width: 45%;
-      }
-    </style> -->
   <script>
     $(document).ready(function () {
       show_book();
@@ -93,7 +56,6 @@
             let sampul = rows_book[i]["sampul"];
             let id = rows_book[i]["id"];
 
-            console.log(id)
             let temp_html = `
                     <div class="col">
                         <div class="card shadow h-100">
@@ -197,38 +159,32 @@
     });
 }
 
-function edit(id) {
-      // let judul = $('#judul').val();
-      // let genre = $('#genre').val();
-      // let tahun = $('#tahun').val();
-      // let pengarang = $('#pengarang').val();
-      // let stok = $('#stok').val();
-      // let sampul = $("#sampul")[0].files[0];
-      // let sinopsis = $('#sinopsis').val();
+    function edit(id) {
       $.ajax({
-                type: "POST",
-                url: `/edit_buku/${id}`,
-                data: {},
-                success: function (response) {
-                  let book = response.book;
-                  $('#input-buku').addClass('is-active');
+        type: "POST",
+        url: `/edit_buku/${id}`,
+        data: {},
+        success: function (response) {
+          console.log(id);
+          let book = response.book;
+          $('#input-buku').addClass('is-active');
 
-                  $('#input-buku #judul').val(book.judul);
-                  $('#input-buku #genre').val(book.genre);
-                  $('#input-buku #tahun').val(book.tahun);
-                  $('#input-buku #pengarang').val(book.pengarang);
-                  $('#input-buku #stok').val(book.stok);
-                  $('#input-buku #sampul').val(book.sampul);
-                  $('#input-buku #sinopsis').val(book.sinopsis);
+          $('#input-buku #judul').val(book.judul);
+          $('#input-buku #genre').val(book.genre);
+          $('#input-buku #tahun').val(book.tahun);
+          $('#input-buku #pengarang').val(book.pengarang);
+          $('#input-buku #stok').val(book.stok);
+          // $('#input-buku #sampul').val(book.sampul);
+          $('#input-buku #sinopsis').val(book.sinopsis);
 
-                  $('#save-button').attr('data-id', id);
-                },
-                error: function(error) {
-                  alert("Terjadi kesalahan saat mengambil data buku.");
-                  console.error(error);
-                }
-            });    
-      }
+          $('#save-button').attr('data-id', id);
+        },
+        error: function(error) {
+          alert("Terjadi kesalahan saat mengambil data buku.");
+          console.error(error);
+        }
+    });
+    }
   </script>
 </head>
 
@@ -271,7 +227,7 @@ function edit(id) {
     <h2>TAMBAHKAN BUKU</h2>
     <hr class="mx-auto">
     <div class="container justify-content-center">
-      <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center"
+      <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center mt-3"
         style="width: 100%;">+Tambah</a>
     </div>
   </div>

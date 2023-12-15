@@ -182,7 +182,7 @@
 
 .card-body>p {
     margin-bottom: 5px;
-    font-size: 12px;
+    font-size: 15px;
 }
 
 
@@ -342,4 +342,15 @@ hr {
     background-repeat: no-repeat;
     background-size: cover;
 
+}
+
+/* Style Pop Up */
+.horizontal-line {
+    width: 50%;
+    margin-bottom: 20px;
+    background-color: #8a969c;
+}
+
+.card-sinopsis{
+    text-align: justify;
 }

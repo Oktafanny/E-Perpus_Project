@@ -176,17 +176,17 @@ def edit_buku(id):
     pengarang = request.form.get('pengarang')
     stok = int(request.form.get('stok'))
 
-    # file = request.files['sampul']
-    # filename = secure_filename(file.filename)
-    # extension = filename.split(".")[-1]
-    # file.save = f'book_pics/{judul}.{extension}'
-    today = datetime.now()
-    mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
+    # # file = request.files['sampul']
+    # # filename = secure_filename(file.filename)
+    # # extension = filename.split(".")[-1]
+    # # file.save = f'book_pics/{judul}.{extension}'
+    # today = datetime.now()
+    # mytime = today.strftime('%Y-%m-%d-%H-%M-%S')
 
-    file = request.files["sampul"]
-    extension = file.filename.split('.')[-1]
-    filename = f'static/book_pics/post-{mytime}.{extension}'
-    file.save(filename)
+    # file = request.files["sampul"]
+    # extension = file.filename.split('.')[-1]
+    # filename = f'static/book_pics/post-{mytime}.{extension}'
+    # file.save(filename)
     
     
     # file = request.files['sampul']
@@ -194,19 +194,21 @@ def edit_buku(id):
     # extension = filename.split(".")[-1]
     # file_path = f"book_pics/{judul}.{extension}"
     # file.save("./static/" + file_path)
-    time = today.strftime('%Y%m%d%H%M%S')
+    # time = today.strftime('%Y%m%d%H%M%S')
 
     sinopsis = request.form.get('sinopsis')
-    db.book.find_one({'id': id}, {'_id': 0})
-    db.book.update_one(
-        {'id': time},
-        {'judul': judul,
+    new_doc = (
+        {'id': id},
+        {'$set': {'judul': judul,
         'genre': genre,
         'tahun': tahun,
         'pengarang': pengarang,
         'stok': stok,
-        'sampul': filename,
-        'sinopsis': sinopsis})
+        # 'sampul': filename,
+        'sinopsis': sinopsis
+        }}
+    )
+    db.book.update_one(new_doc)
     return jsonify({'msg': 'Data buku berhasil diubah'})
 
 # @app.route('/hal_riwayat')
@@ -548,9 +550,9 @@ def buku():
     # return render_template('buku.html', books=book_list)
     # return jsonify({'books': book_list})
 
-@app.route('/deskripsi', methods=['GET'])
-def deskripsi():
-    find_book = db.book.find_one({'id': request.args.get('bookId')}, {'_id': 0})
+@app.route('/deskripsi/<id>', methods=['GET'])
+def deskripsi(id):
+    find_book = db.book.find_one({'id': id}, {'_id': 0})
     return jsonify({'book': find_book})
 
 # @app.route('/peminjaman', methods=['GET'])

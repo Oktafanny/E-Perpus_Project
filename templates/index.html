@@ -68,27 +68,25 @@
             });
         }
 
-        function showDescription(bookId) {
-            // bookId = bookId.toString();
-            $.ajax({
-                type: "GET",
-                url: `/info`,
-                data: {bookId: bookId},
-                success: function (response) {
-                    let book = response['book'];
-                    // Update modal deskripsi dengan informasi dari response
-                    $('#deskripsi .card-img-top').attr('src', '../' + book['sampul']);
-                    $('#deskripsi .card-title').text(book['judul']);
-                    $('#deskripsi .card-text tahun').text(`Tahun: ${book['tahun']}`);
-                    $('#deskripsi .card-text genre').text(`Genre: ${book['genre']}`);
-                    $('#deskripsi .card-text penulis').text(`Penulis: ${book['pengarang']}`);
-                    $('#deskripsi .card-text sinopsis').text(`Sinopsis: ${book['sinopsis']}`);
-                    $('#deskripsi .card-text stock').text(`Stok: ${book['stok']}`);
+        function showDescription(id) {
+          $.ajax({
+              type: "GET",
+              url: `/deskripsi/${id}`,
+              data: {},
+              success: function (response) {
+                  let book = response['book'];
+                  $('#deskripsi .card-img-top').attr('src', book['sampul']);
+                  $('#deskripsi .card-title').text(book['judul']);
+                  $('#deskripsi .card-genre').text(`Genre: ${book['genre']}`);
+                  $('#deskripsi .card-tahun').text(`Tahun: ${book['tahun']}`);
+                  $('#deskripsi .card-penulis').text(`Penulis: ${book['pengarang']}`);
+                  $('#deskripsi .card-sinopsis').text(book['sinopsis']);
+                  $('#deskripsi .card-stok').text(`Stock: ${book['stok']}`);
 
-                    // Tampilkan modal deskripsi
-                    $('#deskripsi').addClass('is-active');
-                }
-            });
+                  // Tampilkan modal deskripsi
+                  $('#deskripsi').addClass('is-active');
+              }
+          });
         }
        
         function logout() {
@@ -132,7 +130,7 @@
     <section class="artikel_area section_gap py-5" id="mycards" style="min-height:100vh">
         <div class="container">
             <div class="mb-5">
-                <h2 class="text-center fw-bold" style="font-size: 30px;">Peminjaman Buku Perpustakaan</h2>
+                <h2 class="text-center fw-bold" style="font-size: 30px;">PEMINJAMAN BUKU PERPUSTAKAAN</h2>
                 <br>
                 <h2 class="text-center fw-bold" style="font-size: 15px; color: #007bff;">SHOW BOOKS</h2>
                 <hr>
@@ -152,52 +150,7 @@
                                 <a href="/buku" class="btn btn-primary col" style="border-radius: 20px;">Pinjam</a>
                                 <a onclick="$('#deskripsi').addClass('is-active')" class="btn border-primary col" style="border-radius: 20px;">Deskripsi</a>
                             </div> -->
-                    <div class="modal" id="deskripsi">
-                        <div class="modal-background" onclick="$('#deskripsi').removeClass('is-active')"></div>
-                        <div class="modal-content">
-                            <div class="box">
-                                <article class="media">
-                                    <div class="media-content">
-                                        <div class="field">
-                                            <div class="row row-cols-1 row-cols-md-2 g-4" id="cards-box">
-                                                <div class="col-md-4">
-                                                    <div class="card shadow h-100">
-                                                        <img src="" class="card-img-top"
-                                                            style="height: 100%;">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-8">
-                                                    <div class="card-body">
-                                                        <h5 class="card-title mb-2">Éclair : Pagi Terakhir
-                                                            di Rusia</h5>
-                                                        <p class="card-text genre">Genre : Romance</p>
-                                                        <p class="card-text tahun">Tahun : 2011</p>
-                                                        <p class="card-text penulis">Penulis : Prisca Primasari</p>
-                                                        <p class="card-text sinopsis">Sinopsis : Lorem Ipsum is simply dummy text of the
-                                                            printing and typesetting industry. Lorem Ipsum has
-                                                            been the industry's standard dummy text ever since
-                                                            the 1500s, when an unknown printer took a galley of
-                                                            type and scrambled it to make a type specimen book.
-                                                            It has survived not only five centuries, but also
-                                                            the leap into electronic typesetting, remaining
-                                                            essentially unchanged. It was popularised in the
-                                                            1960s with the release of Letraset sheets containing
-                                                            Lorem Ipsum passages, and more recently with desktop
-                                                            publishing software like Aldus PageMaker including
-                                                            versions of Lorem Ipsum.</p>
-                                                        <p class="card-text stock">Stock : 10</p>
-                                                    </div>
-                                                    <hr class="mx-auto">
-                                                    <button type="submit" class="btn btn-outline-danger"
-                                                        onclick="$('#deskripsi').removeClass('is-active')">CLOSE</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </article>
-                            </div>
-                        </div>
-                    </div>
+                    
                     <!-- </div>
                     </div> -->
                     <!-- <div class="col">
@@ -300,6 +253,57 @@
         </div>
     </section>
 
+    <!-- Deskripsi -->
+    <div class="modal" id="deskripsi">
+        <div class="modal-background" onclick="$('#deskripsi').removeClass('is-active')"></div>
+        <div class="modal-content">
+            <!-- <div class="modal-header">
+                <h2 class="modal-title">Deskripsi</h2>
+            </div> -->
+            <div class="box">
+                <article class="media">
+                    <div class="media-content">
+                        <div class="field">
+                            <div class="row row-cols-1 row-cols-md-2 g-4" id="cards-box">
+                                <div class="col-md-4">
+                                    <div class="card shadow h-100">
+                                        <img src="" class="card-img-top"
+                                            style="height: 100%;">
+                                    </div>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h4 class="card-title">Éclair : Pagi Terakhirdi Rusia</h4>
+                                        <hr class="horizontal-line">
+                                        <p class="card-genre">Genre : Romance</p>
+                                        <p class="card-tahun">Tahun : 2011</p>
+                                        <p class="card-penulis">Penulis : Prisca Primasari</p>
+                                        <p class="card-stok">Stock : 10</p>
+                                    </div>
+                             </div>
+                        </div>
+                        <h6 class="sinopsis mt-3 mb-1" style="font-weight: 600;">SINOPSIS</h6>
+                                        <p class="card-sinopsis">Lorem Ipsum is simply dummy text of the
+                                            printing and typesetting industry. Lorem Ipsum has
+                                            been the industry's standard dummy text ever since
+                                            the 1500s, when an unknown printer took a galley of
+                                            type and scrambled it to make a type specimen book.
+                                            It has survived not only five centuries, but also
+                                            the leap into electronic typesetting, remaining
+                                            essentially unchanged. It was popularised in the
+                                            1960s with the release of Letraset sheets containing
+                                            Lorem Ipsum passages, and more recently with desktop
+                                            publishing software like Aldus PageMaker including
+                                            versions of Lorem Ipsum.</p>
+                                    <hr class="mx-auto">
+                                    <button type="submit" class="btn btn-outline-danger"
+                                        onclick="$('#deskripsi').removeClass('is-active')">CLOSE</button>
+                                </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </div>
 
     <footer class="copyright mt-0">
         <div class="container py-2">
