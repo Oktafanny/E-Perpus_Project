@@ -124,9 +124,13 @@
                         $('#deskripsi .status').addClass('btn btn-outline-warning btnriwayat shadow-sm');
                         $('#deskripsi .status').addClass('text-dark');
                         // $('#deskripsi .status').css('color', 'black');
-                    } else {
-                        $('#deskripsi .status').val(`Accepted`);
+                    } else if (peminjaman['status'] === 1) {
+                        $('#deskripsi .status').val(`Approved`);
                         $('#deskripsi .status').addClass('btn btn-outline-success btnriwayat shadow-sm');
+                        $('#deskripsi .status').addClass('text-dark');
+                    } else{
+                        $('#deskripsi .status').val(`Rejected`);
+                        $('#deskripsi .status').addClass('btn btn-outline-danger btnriwayat shadow-sm');
                         $('#deskripsi .status').addClass('text-dark');
                     }
 
@@ -173,7 +177,9 @@
                                 {% if data['peminjaman']['status'] == 0 %}
                                     <button onclick="showInfo(`{{ data['peminjaman']['id'] }}`)" type="button" class="btn btn-outline-warning btnriwayat shadow-sm">Pending</button>
                                 {% elif data['peminjaman']['status'] == 1 %}
-                                    <button onclick="showInfo(`{{ data['peminjaman']['id'] }}`)" class="btn btn-outline-success btnriwayat shadow-sm">Accepted</button>
+                                    <button onclick="showInfo(`{{ data['peminjaman']['id'] }}`)" class="btn btn-outline-success btnriwayat shadow-sm">Approved</button>
+                                {% elif data['peminjaman']['status'] == 2 %}
+                                    <button onclick="showInfo(`{{ data['peminjaman']['id'] }}`)" class="btn btn-outline-danger btnriwayat shadow-sm">Rejected</button>
                                 {% endif %}
                             </div>
                         </div>

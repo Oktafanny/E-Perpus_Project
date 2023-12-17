@@ -304,7 +304,13 @@ def daftar():
 def accept_book(bookId):
     id_give = request.form['id_give']
     db.peminjaman.update_one({'id':id_give},{'$set':{'status':1}})
-    return jsonify({'msg':'Accept!'})
+    return jsonify({'msg':'Approved!'})
+
+@app.route("/reject/<int:bookId>", methods=["POST"])
+def reject_book(bookId):
+    id_give = request.form['id_give']
+    db.peminjaman.update_one({'id':id_give},{'$set':{'status':2}})
+    return jsonify({'msg':'Rejected!'})
 
 @app.route('/info', methods=['GET'])
 def info():

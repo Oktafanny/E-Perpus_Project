@@ -123,13 +123,14 @@
                     $('#deskripsi .catatan').val(`${peminjaman['catatan']}`);
                     
                     // Ganti kondisi untuk menetapkan status
-                    if (peminjaman['status'] === 1) {
-                        $('#acceptButton').addClass('is-hidden');
+                    if (peminjaman['status'] === 1 || peminjaman['status'] === 2 ) {
+                        $('#deskripsi .dropdown').addClass('is-hidden');
                     } else {
-                        $('#acceptButton').removeClass('is-hidden');
+                        $('#deskripsi .dropdown').removeClass('is-hidden');
                     }
 
-                    $('#deskripsi .btn-outline-success').attr('onclick', `accept('${peminjaman['id']}')`);
+                    $('#deskripsi .accept').attr('onclick', `accept('${peminjaman['id']}')`);
+                    $('#deskripsi .reject').attr('onclick', `reject('${peminjaman['id']}')`);
                     // Tampilkan modal deskripsi
                     $('#deskripsi').addClass('is-active');
                 }
@@ -140,6 +141,18 @@
             $.ajax({
                 type: "POST",
                 url: `/accept/${bookId}`,
+                data: { id_give: bookId },
+                success: function (response) {
+                    alert(response["msg"])
+                    window.location.reload();
+                }
+            });
+        }
+
+        function reject(bookId) {
+            $.ajax({
+                type: "POST",
+                url: `/reject/${bookId}`,
                 data: { id_give: bookId },
                 success: function (response) {
                     alert(response["msg"])
@@ -216,7 +229,10 @@
                                     onclick="showInfo(`{{ data['peminjaman']['id'] }}`)">Details</button>
                                 {% elif data['peminjaman']['status'] == 1 %}
                                     <button type="button" class="btn btn-outline-success btnriwayat shadow-sm"
-                                    onclick="showInfo(`{{ data['peminjaman']['id'] }}`)">Done</button>
+                                    onclick="showInfo(`{{ data['peminjaman']['id'] }}`)">Approved</button>
+                                {% elif data['peminjaman']['status'] == 2 %}
+                                    <button type="button" class="btn btn-outline-danger btnriwayat shadow-sm"
+                                    onclick="showInfo(`{{ data['peminjaman']['id'] }}`)">Rejected</button>
                                 {% endif %}
                             </div>
                         </div>
@@ -295,8 +311,31 @@
                                                                         value="Pending" disabled></textarea>
                                                                 </div>
                                                                 <hr class="mx-auto">
-                                                                <button type="submit" class="btn btn-outline-success" id="acceptButton"
-                                                                    onclick="accept('${bookId}')">Accept</button>
+                                                                <div class="dropdown btn-group">
+                                                                    <button class="btn btn-outline-dark dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                      Action
+                                                                    </button>
+                                                                    <ul class="dropdown-menu dropdown-menu-dark">
+                                                                      <!-- <li><a class="dropdown-item active" href="#">Action</a></li> -->
+                                                                      <li><a class="dropdown-item active accept" href="#">Approve</a></li>
+                                                                      <li><a class="dropdown-item reject" href="#">Reject</a></li>
+                                                                      <!-- <li><hr class="dropdown-divider"></li> -->
+                                                                      <!-- <li><a class="dropdown-item" href="#">Separated link</a></li> -->
+                                                                    </ul>
+                                                                </div>
+                                                                <!-- <div class="btn-group">
+                                                                    <button type="button" id="acceptButton" class="btn btn-outline-dark dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                                      Action
+                                                                    </button>
+                                                                    <div class="dropdown-menu">
+                                                                      <button class="dropdown-item accept" onclick="accept('${bookId}', 'Accept')">Accept</button>
+                                                                      <div class="dropdown-divider"></div>
+                                                                      <button class="dropdown-item reject" onclick="reject('${bookId}', 'Reject')">Reject</button>
+                                                                    </div>
+                                                                  </div> -->
+                                                                  
+                                                                <!-- <button type="submit" class="btn btn-outline-success" id="acceptButton"
+                                                                    onclick="accept('${bookId}')">Accept</button> -->
                                                                     <hr/>
                                                                 <button type="submit" class="btn btn-outline-danger"
                                                                     onclick="$('#deskripsi').removeClass('is-active')">CLOSE</button>
