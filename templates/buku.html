@@ -3,15 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="shortcut icon" href="/static/misc/favicon.ico" type="image/x-icon"/>
+    <link rel="icon" href="/static/misc/favicon.ico" type="image/x-icon"/>
+    <meta property="og:title" content="E-Perpus" />
+    <meta property="og:description" content="Anda dapat menikmati koleksi buku digital yang kaya dan beragam, mencakup berbagai genre, penulis terkenal, dan topik menarik." />
+    <meta property="og:image" content="/static/misc/buku.jpg" />
+
     <title>E-Perpus</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
-    <!-- Style CSS -->
-    <!-- <link href="{{ url_for('static', filename='user/style.css') }}" rel="stylesheet"> -->
-    <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
+
     <!-- Bulma CSS -->
     <link
       rel="stylesheet"
@@ -37,11 +42,13 @@
     <script>
       $(document).ready(function () {
       show_book();
+      search();
       bsCustomFileInput.init()
       });
 
       function search() {
-        let search = $('#input-name').val().toLowerCase().trim();
+        $('#input-name').on('input', function() {
+          let search = $(this).val().toLowerCase().trim();
           $('#cards-box').children('.col').each(function() {
               let cardTitle = $(this).find('.card-title').text().toLowerCase();
               if (cardTitle.includes(search)) {
@@ -50,6 +57,16 @@
                   $(this).hide();
               }
           });
+        });
+        // let search = $('#input-name').val().toLowerCase().trim();
+        //   $('#cards-box').children('.col').each(function() {
+        //       let cardTitle = $(this).find('.card-title').text().toLowerCase();
+        //       if (cardTitle.includes(search)) {
+        //           $(this).show();
+        //       } else {
+        //           $(this).hide();
+        //       }
+        //   });
       }
 
     function show_book() {
@@ -180,14 +197,14 @@
   <hr class="mx-auto">
   <div class="search-box d-flex justify-content-center">
     <input id="input-name" class="form-control rounded-pill" style="margin-right: 0.5rem" placeholder="Cari buku...">
-    <button class="btn btn-primary rounded-pill" onclick="search()"><i data-feather="search"></i></button>
+    <i data-feather="search" style="color: dodgerblue;"></i>
   </div>
 </div>
 
 <!-- Card -->
   <div class="mycards">
     <div class="row row-cols-1 row-cols-md-4 g-4" id="cards-box">
-      <div class="col">
+      <!-- <div class="col">
           <div class="card shadow h-100">
               <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
                   class="card-buku">
@@ -200,49 +217,7 @@
                   <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
               </div>
           </div>
-      </div>
-      <div class="col">
-          <div class="card shadow h-100">
-              <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
-                  class="card-buku">
-              <div class="card-body">
-                  <h5 class="card-title mb-2">Lorenza : Pagi Terakhir di Rusia</h5>
-                  <p class="card-text">Genre : Romance</p>
-                  <p>Penulis : Prisca Primasari</p>
-                  <p>Tahun : 2011</p>
-                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
-                  <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
-              </div>
-          </div>
-      </div>
-      <div class="col">
-          <div class="card shadow h-100">
-              <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
-                  class="card-buku">
-              <div class="card-body">
-                  <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-                  <p class="card-text">Genre : Romance</p>
-                  <p>Penulis : Prisca Primasari</p>
-                  <p>Tahun : 2011</p>
-                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
-                  <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
-              </div>
-          </div>
-      </div>
-      <div class="col">
-          <div class="card shadow h-100">
-              <img src="https://books.google.co.id/books/content?id=FbI24xANEx0C&hl=id&pg=PP1&img=1&zoom=3&sig=ACfU3U1eiDcK4JPhiiv5u9_W0Gp7qd5N0A&w=1280"
-                  class="card-buku">
-              <div class="card-body">
-                  <h5 class="card-title mb-2">Éclair : Pagi Terakhir di Rusia</h5>
-                  <p class="card-text">Genre : Romance</p>
-                  <p>Penulis : Prisca Primasari</p>
-                  <p>Tahun : 2011</p>
-                  <a href="/peminjaman" class="btn btn-primary col rounded-pill">Pinjam</a>
-                  <a onclick="$('#deskripsi').addClass('is-active')" type="button" class="btn border-primary col rounded-pill" data-bs-toggle="modal" data-bs-target="#deskripsi">Deskripsi</a>
-              </div>
-          </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </section>
