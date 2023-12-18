@@ -161,35 +161,6 @@
     {% include 'navbar_check/navbar_viewer.html' %}
 {% endif %}
 
-  <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
-    <div class="container">
-        <a class="navbar-brand text-primary" href="/">E-Perpus</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto">
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/buku">Buku</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link text-dark" href="/contact_us">Contact Us</a>
-                </li>
-                <li class="nav">
-                    <a href="/login" style="border-radius: 20px;" class="btn btn-primary py-2 px-3">Masuk/Daftar</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav> -->
-
 <!-- BUKU PAGE -->
 <section class="artikel_area section_gap py-5" id="mycards" style="min-height:100vh">
 <div class="wrap">
@@ -272,12 +243,13 @@
 </div>
 
 <!-- Footer -->
-<footer class="copyright mt-3 shadow">
+{% include 'footer.html' %}
+<!-- <footer class="copyright mt-3 shadow">
   <div class="container py-2">
     <div class="row mt-2">
       <div class="col-md-4">
         Copyright © by Kelompok 2
-      </div>
+      </div> -->
       <!-- <div class="icon col-md-4 offset-md-4 d-flex justify-content-end">
         <ul>
           <i data-feather="facebook"></i>

@@ -122,33 +122,6 @@
       }
     }
 
-    // function save() {
-    //     let judul = $('#judul').val();
-    //     let genre = $('#genre').val();
-    //     let tahun = $('#tahun').val();
-    //     let pengarang = $('#pengarang').val();
-    //     let stok = $('#stok').val();
-    //     let sampul = $("#sampul").prop("files")[0];
-    //     let sinopsis = $('#sinopsis').val();
-    //     $.ajax({
-    //         type: "POST",
-    //         url: "/input_buku",
-    //         data: {
-    //           judul_give: judul,
-    //           genre_give: genre,
-    //           tahun_give: tahun,
-    //           pengarang_give: pengarang,
-    //           stok_give: stok,
-    //           sampul_give: sampul,
-    //           sinopsis_give: sinopsis
-    //          },
-    //         success: function (response) {
-    //             alert(response["msg"])
-    //             window.location.reload();
-    //         }
-    //     });
-    // }
-
     function form_edit(id) {
           $.ajax({
               type: "GET",
@@ -223,6 +196,7 @@
 </head>
 
 <body>
+  <!-- Navbar -->
   {% if user_info %}
   {% if user_info.role == 'admin' %}
       {% include 'navbar_check/navbar_admin.html' %}
@@ -232,31 +206,9 @@
 {% else %}
   {% include 'navbar_check/navbar_viewer.html' %}
 {% endif %}
-  <!-- navbar -->
-  <!-- <nav class="navbar navbar-expand-lg navbar-dark bg-light navbar shadow-sm sticky-top">
-    <div class="container">
-      <a class="navbar-brand text-primary" href="#">E-Perpus</a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse" id="navbarNav">
-        <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/buku_admin">Buku</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link text-dark" href="/peminjaman_admin">Peminjaman</a>
-          </li>
-          <li class="nav-item">
-            <a href="/login" style="border-radius: 20px;" class="btn border-dark py-2 px-3">Logout</a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </nav> -->
 
   <!-- BUKU ADMIN  -->
+ <section>
   <div class="wrap">
     <h2>TAMBAHKAN BUKU</h2>
     <hr class="mx-auto">
@@ -286,6 +238,7 @@
     </div> -->
     </div>
   </div>
+ </section>
 
   <!-- Tambah : Form Input  -->
   <div class="modal" id="input-buku">
@@ -331,22 +284,8 @@
   </div>
 
   <!-- Footer -->
-  <footer class="copyright mt-3 shadow">
-    <div class="container py-2">
-      <div class="row mt-2">
-        <div class="col-md-4">
-          Copyright © by Kelompok 2
-        </div>
-        <div class="icon col-md-4 offset-md-4 d-flex justify-content-end">
-          <ul>
-            <i data-feather="facebook"></i>
-            <i data-feather="instagram"></i>
-            <i data-feather="globe"></i>
-          </ul>
-        </div>
-      </div>
-    </div>
-  </footer>
+  {% include 'footer.html' %}
+  
   <script>
     feather.replace();
   </script>
