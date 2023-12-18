@@ -121,16 +121,16 @@
                     // Ganti kondisi untuk menetapkan status
                     if (peminjaman['status'] === 0) {
                         $('#deskripsi .status').val(`Pending`);
-                        $('#deskripsi .status').addClass('btn btn-outline-warning btnriwayat shadow-sm');
+                        $('#deskripsi .status').addClass('btn btn-outline-warning btnriwayat shadow-sm hidden');
                         $('#deskripsi .status').addClass('text-dark');
                         // $('#deskripsi .status').css('color', 'black');
                     } else if (peminjaman['status'] === 1) {
                         $('#deskripsi .status').val(`Approved`);
-                        $('#deskripsi .status').addClass('btn btn-outline-success btnriwayat shadow-sm');
+                        $('#deskripsi .status').addClass('btn btn-outline-success btnriwayat shadow-sm hidden');
                         $('#deskripsi .status').addClass('text-dark');
                     } else{
                         $('#deskripsi .status').val(`Rejected`);
-                        $('#deskripsi .status').addClass('btn btn-outline-danger btnriwayat shadow-sm');
+                        $('#deskripsi .status').addClass('btn btn-outline-danger btnriwayat shadow-sm hidden');
                         $('#deskripsi .status').addClass('text-dark');
                     }
 
