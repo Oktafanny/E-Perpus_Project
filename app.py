@@ -668,6 +668,32 @@ def contact():
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("home"))
 
+@app.route("/hubungi_admin", methods=['GET'])
+def hubungi_admin():
+    token_receive = request.cookies.get("mytoken")
+    try:
+        payload = jwt.decode(
+            token_receive,
+            SECRET_KEY,
+            algorithms=['HS256']
+        )
+        contacts = list(db.contact.find({}, {'_id': 0}))
+        user_info = db.user.find_one({'username': payload["id"]})
+        return render_template('hubungi_admin.html', user_info=user_info, contacts=contacts)
+    except jwt.ExpiredSignatureError:
+        msg = 'Your token has expired'
+        return redirect(url_for('login', msg=msg))
+    except jwt.exceptions.DecodeError:
+        msg = 'There was a problem logging you in'
+        return redirect(url_for('login', msg=msg))
+    
+    # try:
+    #     contacts = list(db.contact.find({}, {'_id': 0}))
+    #     return render_template("hubungi_admin.html", contacts=contacts)
+    # except Exception as e:
+    #     # return jsonify({"error": str(e)})
+    #     return jsonify({"result": "success", "msg": "Pesan berhasil dikirim"})
+                        
 @app.route('/about', methods=['GET'])
 def about():
     token_receive = request.cookies.get("mytoken")
