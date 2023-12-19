@@ -314,8 +314,8 @@ def reject_book(bookId):
 
 @app.route('/info', methods=['GET'])
 def info():
-    find_book = db.book.find_one({}, {'_id':0})
     find_peminjaman = db.peminjaman.find_one({'id': request.args.get('bookId')}, {'_id':0})
+    find_book = db.book.find_one({'id':find_peminjaman['id_buku']}, {'_id':0})
     return jsonify({'book': find_book, 'peminjaman': find_peminjaman})
 
 @app.route('/buku_admin', methods=['GET'])
