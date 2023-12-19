@@ -17,6 +17,7 @@
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
   <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
   <!-- Style CSS -->
   <link href="{{ url_for('static', filename='user/buku.css') }}" rel="stylesheet">
@@ -112,8 +113,16 @@
           processData: false,
           success: function (response) {
             console.log(response);
-            alert(response["msg"])
-            window.location.reload();
+            if (response["result"] === "success"){
+              Swal.fire({
+                title: "Sukses!",
+                text: "Data buku berhasil disimpan",
+                icon: "success",
+                confirmButtonText: "OK"
+              }).then(() => {
+                window.location.reload();
+              });
+            }
           },
         });
       } else {
@@ -149,14 +158,26 @@
         url: `/delete_book/${id}`,
         success: function(response) {
           console.log(response);
-          alert(response['msg']);
-          window.location.reload();
-          // show_book();
+          if (response["result"] === "success"){
+              Swal.fire({
+                  title: "Sukses!",
+                  text: "Data buku berhasil dihapus!",
+                  icon: "success",
+                  confirmButtonText: "OK"
+              }).then(() => {
+                  window.location.reload();
+              });
+          } else {
+            Swal.fire({
+                title: "Gagal!",
+                text: "Terjadi kesalahan saat menghapus buku!",
+                icon: "error",
+                confirmButtonText: "OK"
+            }).then(() => {
+                window.location.reload();
+            });
+          }
         },
-        error: function(error) {
-            alert("Terjadi kesalahan saat menghapus buku.");
-            console.error(error);
-        }
     });
 }
 
@@ -185,8 +206,14 @@
             processData: false,
             success: function (response) {
                 if (response["result"] === "success") {
-                    alert(response["msg"]);
-                    window.location.reload();
+                  Swal.fire({
+                    title: "Sukses!",
+                    text: "Data buku berhasil diperbarui!",
+                    icon: "success",
+                    confirmButtonText: "OK"
+                  }).then(() => {
+                      window.location.reload();
+                  });
                 }
             },
     });
@@ -213,7 +240,7 @@
     <h2>TAMBAHKAN BUKU</h2>
     <hr class="mx-auto">
     <div class="container justify-content-center">
-      <a onclick="$('#input-buku').addClass('is-active')" class="btn btn-primary justify-content-center mt-3"
+      <a onclick="$('#input-buku').addClass('is-active'), $('form#tambah-buku')[0].reset();" class="btn btn-primary justify-content-center mt-3"
         style="width: 100%;">+Tambah</a>
     </div>
   </div>
@@ -252,7 +279,7 @@
             data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form>
+          <form id="tambah-buku">
             <div class="mb-3">
               <input type="text" class="form-control judul" id="judul" placeholder="Judul Buku">
             </div>

@@ -161,12 +161,12 @@ def save_buku():
     }
     print(doc)
     db.book.insert_one(doc)
-    return jsonify({'msg': 'Data buku berhasil disimpan'})
+    return jsonify({"result": "success", 'msg': 'Data buku berhasil disimpan'})
 
 @app.route('/delete_book/<id>', methods=['POST'])
 def delete_book(id):
     db.book.delete_one({'id': id})
-    return jsonify({'msg': f'Buku dengan ID {id} berhasil dihapus.'})
+    return jsonify({"result": "success",'msg': f'Buku dengan ID {id} berhasil dihapus.'})
 
 # @app.route('/edit_buku/<id>', methods=['POST'])
 # def edit_buku(id):
@@ -363,7 +363,7 @@ def proses_pinjam(id):
     }
     db.peminjaman.insert_one(doc)
   
-    return jsonify({"msg": 'Data buku berhasil disimpan'})
+    return jsonify({"result": "success", "msg": 'Peminjaman segera di proses'})
 
 @app.route('/peminjaman_admin', methods=['GET'])
 def peminjaman_admin():

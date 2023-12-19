@@ -33,6 +33,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
         integrity="sha384-l2VRKbYi1aGRZ5oxk/xDeQPQq5Ffmvj8ZkKW1D5FA7kFeM4M6F7L/lUn2P5xkiM+T" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         .nav-link.dropdown-toggle::after {
             content: '';
@@ -77,8 +78,16 @@
                         book_id: id
                      },
                     success: function (response) {
-                        alert(response["msg"])
-                        window.location.reload();
+                        if (response["result"] === "success"){
+                            Swal.fire({
+                                title: "Sukses!",
+                                text: "Peminjaman Anda akan diproses. Tunggu validasi admin.",
+                                icon: "success",
+                                confirmButtonText: "OK"
+                            }).then(() => {
+                                window.location.reload();
+                            });
+                        }
                     }
                 });
             }
@@ -131,7 +140,7 @@
                                     style="border: 2px solid grey;">
                             </div>
                             <div class="mb-3">
-                                <input type="number" class="form-control" id="no_telp" placeholder="No. Telepon"
+                                <input type="text" class="form-control" id="no_telp" placeholder="No. Telepon"
                                     style="border: 2px solid grey;">
                             </div>
                             <div class="mb-3">
