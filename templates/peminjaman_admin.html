@@ -216,7 +216,7 @@
                 <hr class="mx-auto">
             </div>
             <div class="wrapper-riwayat" id="cards-box">
-            {% for data in combined_data|sort(attribute='peminjaman.id', reverse=True) %}
+            {% for data in combined_data|sort(attribute='peminjaman.tgl_pinjam', reverse=True) %}
                 <div class="card mb-3 mx-auto pointer-cursor" style="max-width: 900px;" data-bs-toggle="modal"
                     data-bs-target="">
                     <div class="row g-0">
